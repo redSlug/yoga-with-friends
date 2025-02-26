@@ -1,0 +1,44 @@
+[
+  {
+    "time": "8:45",
+    "meridiem": "AM",
+    "day_of_week": "Tuesday",
+    "date": "March 4"
+  },
+  {
+    "time": "5:00",
+    "meridiem": "PM",
+    "day_of_week": "Thursday",
+    "date": "February 20"
+  },
+  {
+    "time": "7:30",
+    "meridiem": "AM",
+    "day_of_week": "Friday",
+    "date": "February 21"
+  },
+  {
+    "time": "9:00",
+    "meridiem": "AM",
+    "day_of_week": "Wednesday",
+    "date": "February 19"
+  },
+  {
+    "time": "9:00",
+    "meridiem": "AM",
+    "day_of_week": "Tuesday",
+    "date": "February 18"
+  },
+  {
+    "time": "8:45",
+    "meridiem": "AM",
+    "day_of_week": "Tuesday",
+    "date": "February 25"
+  },
+  {
+    "time": "8:00",
+    "meridiem": "PM",
+    "day_of_week": "Monday",
+    "date": "February 17"
+  }
+]

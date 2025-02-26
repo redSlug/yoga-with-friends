@@ -1,0 +1,118 @@
+[
+  {
+    "name": "Delivered-To",
+    "value": "bdettmer@gmail.com"
+  },
+  {
+    "name": "Received",
+    "value": "by 2002:a05:7208:820f:b0:99:83b2:ff46 with SMTP id q15csp499617rbf;        Tue, 25 Feb 2025 07:46:05 -0800 (PST)"
+  },
+  {
+    "name": "X-Google-Smtp-Source",
+    "value": "AGHT+IH2gUsSsUoJz6DoeLfTlcEo1TK4HA/pWb/APNkTC7zHMvrN+EEDhd+y1UQSAeUaG7/LTwpW"
+  },
+  {
+    "name": "X-Received",
+    "value": "by 2002:a05:6871:14d:b0:29d:c6dd:cc6c with SMTP id 586e51a60fabf-2bd5039499amr12569858fac.15.1740498365644;        Tue, 25 Feb 2025 07:46:05 -0800 (PST)"
+  },
+  {
+    "name": "ARC-Seal",
+    "value": "i=1; a=rsa-sha256; t=1740498365; cv=none;        d=google.com; s=arc-20240605;        b=B7rmyxEW7z9I4L/xMjLq7kfw0cDl2TS5RouABiQEWYz8Vdc1RpNmNrjThj+l3jJTwM         aLsUaLsJbsSnYqnihhZ/1qrDs5VZ7Q3rHgHzfxd9jhqRLAI8nAhhJQx1tm4UiMYpa6TS         eOWFiI7mNsm8PfdNcaNcvtHeP7ORx1UmXzCDu0OLaoOs6Fu1enBDFewXkILgg6dMwoYO         jRPFXXtjhcOAPkBbwr47i6FRJHQjWI+oixmn2ABMCc816g9i4y2aY0H2QzmWjni1z9Vf         Uj0t0eUqJpPdXVTgGO/Hl2OoB6MUvaNnjd+5nFKRwBz+W/93b07bL3D3gd+uZQ72zqYH         XkAg=="
+  },
+  {
+    "name": "ARC-Message-Signature",
+    "value": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;        h=list-unsubscribe-post:list-unsubscribe:to:reply-to:subject         :message-id:mime-version:from:date:content-transfer-encoding         :dkim-signature:dkim-signature;        bh=LvwmOyoYHcCNYldvORq7FZbIxXlV1JgqMF/bhIhOxfg=;        fh=xqx5rG0CMX1FnROuCMak349pJqNaN1/FaFoOE0IPexE=;        b=K4I4xI3PMmJ0wMZzZwlsMPPCowKV7qptD2iLXs1DV7Ep5x37x3qly1N5gbUWFa3NrH         3JY7rLfEfPiMXREMPmaE3cI1l0OnIgyQVRRdTnavR7pWHROF36LO+B0TmuSYvTnnJvhP         KrslMquvxc2Z8+65lHhN0MVRx22OqplmQgE0rk41biFQLjmpmPk9yznhtZ6WMPxeoWiC         JVL5Rm9C2Yy8FYKfKLbkTg3lMN7gbQuVd7VQOocaEF2hkdSh9p9XgpE8UgjFD8704qFo         foSZAo5MF+zjnIIZHMe59mK3pXfefWaUaQVYP9sTlzYQiX8ZFQtmI6xs5Dk4Bz6HyFJ/         Yleg==;        dara=google.com"
+  },
+  {
+    "name": "ARC-Authentication-Results",
+    "value": "i=1; mx.google.com;       dkim=pass header.i=@brndbot.com header.s=s1 header.b=CNcJpTbc;       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=tW2CxJal;       spf=pass (google.com: domain of bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com designates 168.245.43.100 as permitted sender) smtp.mailfrom=\"bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com\";       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=heatwise-studio.com"
+  },
+  {
+    "name": "Return-Path",
+    "value": "<bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com>"
+  },
+  {
+    "name": "Received",
+    "value": "from o6.sg.brndbot.com (o6.sg.brndbot.com. [168.245.43.100])        by mx.google.com with ESMTPS id 586e51a60fabf-2c1115e11a9si1293392fac.129.2025.02.25.07.46.04        for <bdettmer@gmail.com>        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);        Tue, 25 Feb 2025 07:46:05 -0800 (PST)"
+  },
+  {
+    "name": "Received-SPF",
+    "value": "pass (google.com: domain of bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com designates 168.245.43.100 as permitted sender) client-ip=168.245.43.100;"
+  },
+  {
+    "name": "Authentication-Results",
+    "value": "mx.google.com;       dkim=pass header.i=@brndbot.com header.s=s1 header.b=CNcJpTbc;       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=tW2CxJal;       spf=pass (google.com: domain of bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com designates 168.245.43.100 as permitted sender) smtp.mailfrom=\"bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com\";       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=heatwise-studio.com"
+  },
+  {
+    "name": "DKIM-Signature",
+    "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=brndbot.com; h=content-transfer-encoding:content-type:from:mime-version:subject: reply-to:x-feedback-id:to:list-unsubscribe:list-unsubscribe-post:cc: content-type:from:subject:to; s=s1; bh=LvwmOyoYHcCNYldvORq7FZbIxXlV1JgqMF/bhIhOxfg=; b=CNcJpTbcLjGNRcfX6LEXrCj0u25sF6vjnE42Nu/CVdhdPsAA0YHH08yFMjuvCzF2r2r6 e8mD7HLVpm/Wv3wnsqX4Ng1IWAoteo4XQHY8jChj3iSiZlIlyHdKSsa3UqRN/R4EMhZEXe jqs6aGqjQVR8SLx3BgzmAAxC6hwvSOM5HFa2HPk0vPvv68UEU/KYUFX0oEFcle4RHXv28Q w7OpJc97UX3ZJ1gecT6ruj2VCDqka8fQwsg93n12xYgoaYxaXoXQzTr2E13UZtPORhj8YV 1kSGT0RRCImqiF6cxmB9H3bHNdVlV29JjzZCN42iJzKmlMIsF7Feo/6o3C2c9ZpA=="
+  },
+  {
+    "name": "DKIM-Signature",
+    "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.info; h=content-transfer-encoding:content-type:from:mime-version:subject: reply-to:x-feedback-id:to:list-unsubscribe:list-unsubscribe-post:cc: content-type:from:subject:to; s=smtpapi; bh=LvwmOyoYHcCNYldvORq7FZbIxXlV1JgqMF/bhIhOxfg=; b=tW2CxJalHsmhpiHT9EHrsD/JP8a5crO6GBI/ghRl+Q7gbr2tNdLaCiB3Kjk14FBKwR2e JW2oXtm/mDMFn8sqss1srtgpv7/WBXRGuEG7deUCdWcWd14O69dbulPA7AzqJCCIWXNpmZ ZZTx5h0iVxUcNzZgZizdrWyt0adFl9DvE="
+  },
+  {
+    "name": "Received",
+    "value": "by recvd-5f54b5d587-mcrq4 with SMTP id recvd-5f54b5d587-mcrq4-1-67BDE5BB-5C 2025-02-25 15:46:03.75516681 +0000 UTC m=+8878979.391700914"
+  },
+  {
+    "name": "Received",
+    "value": "from MzYxOTMxOTI (unknown) by geopod-ismtpd-0 (SG) with HTTP id AN91XbmLS4OCR-uUFAXG7g Tue, 25 Feb 2025 15:46:03.712 +0000 (UTC)"
+  },
+  {
+    "name": "Content-Transfer-Encoding",
+    "value": "quoted-printable"
+  },
+  {
+    "name": "Content-Type",
+    "value": "text/html; charset=utf-8"
+  },
+  {
+    "name": "Date",
+    "value": "Tue, 25 Feb 2025 15:46:03 +0000 (UTC)"
+  },
+  {
+    "name": "From",
+    "value": "Heatwise <info@heatwise-studio.com>"
+  },
+  {
+    "name": "Mime-Version",
+    "value": "1.0"
+  },
+  {
+    "name": "Message-ID",
+    "value": "<AN91XbmLS4OCR-uUFAXG7g@geopod-ismtpd-0>"
+  },
+  {
+    "name": "Subject",
+    "value": "Your spot has been reserved"
+  },
+  {
+    "name": "Reply-To",
+    "value": "parkslope@heatwise-studio.com"
+  },
+  {
+    "name": "X-Feedback-ID",
+    "value": "36193192:SG"
+  },
+  {
+    "name": "X-SG-EID",
+    "value": "u001.5EzLQ8ev+3BKGSaDe/d1nkQxE0ywzMDMGiFelX4Tu7xKJ1pBT9DmF5SHllaD4oeHxRB+dm3j3A4YPibkeC2Pp1QRfkSUuI919xLJojj04TIwkjUK0G3ZHN8z1y7/oRYdE/3cxYpzeE65ydVGX9J5l4sPwpJPw2Jtr/S6e+givCsIPgvZoPRV0/jHOZhzVksZgQBcF+lGyRN+sCWM1UcebFO7a4i5zLoUJ15+vdmg8WV6bXVUQEQu+NRlgpvW+y/o"
+  },
+  {
+    "name": "To",
+    "value": "bdettmer@gmail.com"
+  },
+  {
+    "name": "X-Entity-ID",
+    "value": "u001.1V8aIuP9SFZHMy13zkogmw=="
+  },
+  {
+    "name": "List-Unsubscribe",
+    "value": "<https://u36193192.ct.sendgrid.net/lu/unsubscribe?oc=u001.k2zQ6e8XhQXaaB5Y-oVkOu7HTzx6QD_KZackoUIUqDT9XkA2B2VR-e5jysVOG7_Y3cW1jXzsmaULIhYGIJiZmVhaqZbIgPhGFB4bUGDnpB3m_b9J6jWCEzfHVMzQEHj2wZQq6bHYAn_j5aAprJwWOZr4-HBRlteG5HKqjPcWz83hmiFC6zo2HcWvHgWum8hT_w7yusF4W8vxhp-rwar3i__bbbTA1MVXfhGc0RcNXwCSe9Z5m-0IwQpfSVSdUaGYJuM8f6nNthph1OdATaCg7ff6VwQ8epOg0LPCjJhGqDEVX5Eb3CbNMVSMnAk7GKNnlgPXgaAK2KG9wzYbygbf36NB7LgbeH6G2DNlQCwmbPYEBfW1DHN3pxHJBJt5rD2800U4g5CkSwW5N4Gx5IZLyiFQEeP_3RzYRiCRABErY4E>,<mailto:unsubscribe@sg.brndbot.com?subject=http://link.brndbot.com/mt/u/u001.GcgG6NvchLrwiVREiz9Fo9gEr8ZBwP-F-KianZ6T8NI/4eb/u001.TL2PCZaX/u001.4MW4fIJu0o9YyNb1cp71fDq5oAdY-2B2V1CJcm9r1EYRMgWQe242AmZGgDBBP-2B2gO0cM-2B8dx1A82gmylQPsVuGthmI9yFIeOsKm9E7AoQVUV-2F2ttG-2BsaCO96khd-2BZqwazmMYaa-2FtUlaN-2FHsCaznz481B7GHuK8HNN-2FOC0CgVG-2BoyahMo63hiVnqlT4HjL12-2F8AVezlkaN0gutDU5y-2B-2Bmt6Amr0lfUKfP8j6V6v6lZM7es-3D/u001.GwWZ2XZ5>"
+  },
+  {
+    "name": "List-Unsubscribe-Post",
+    "value": "List-Unsubscribe=One-Click"
+  }
+]
