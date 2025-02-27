@@ -5,3 +5,4 @@ token.json
 credentials.json
 __pycache__
 *.ppm
+.DS_Store
