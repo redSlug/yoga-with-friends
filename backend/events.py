@@ -10,14 +10,28 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 import base64
 
+from ppm_generator import create_image_file
 from data_types.all import Event
-from utils.get_date import convert_to_datetime
+from utils.get_date import convert_to_datetime, get_timestamp
 
 SCOPES: List[str] = [
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/calendar",
 ]
 LOOKBACK_DAYS = 2
+
+BASE_PATH = os.path.dirname(__file__)
+
+def save_ppm_file(text):
+
+    filepath = os.path.abspath(os.path.join(BASE_PATH, "..", "output.ppm"))
+    create_image_file(text, filepath)
+
+def save_events_for_frontend(events: List[Event]):
+    filepath = os.path.abspath(os.path.join(BASE_PATH, "..", "frontend", "src", "data", "events.json"))
+    with open(filepath, 'w') as f:
+        f.write(json.dumps([event.__dict__ for event in events]))
+    print(f'wrote json to file: ', filepath)
 
 
 def get_gmail_service():
@@ -108,7 +122,8 @@ def get_message_content(service, msg_id):
 
 def main():
     gmail_service = get_gmail_service()
-    two_days_ago = datetime.datetime.now() - datetime.timedelta(days=LOOKBACK_DAYS)
+    today = datetime.datetime.now()
+    two_days_ago = today - datetime.timedelta(days=LOOKBACK_DAYS)
     date_str = two_days_ago.strftime("%Y/%m/%d")
     query = f'from:info@heatwise-studio.com subject:"Your spot has been reserved" after:{date_str}'
     messages = search_messages(gmail_service, query)
@@ -117,9 +132,11 @@ def main():
         print("No matching emails found.")
         return
 
-    # Raw example data
+    # Created using https://python-fiddle.com/tools/regex and Raw example data:
     # We will see you at <strong>8:45 AM</strong> on <strong>Tuesday</strong>, <strong>March 4</strong>.</p>
-    pattern = r"<strong>(\d+:\d+) (AM|PM)</strong> on <strong>(.*?)</strong>, <strong>(.*?)</strong>"
+    pattern = (r"with <strong>([a-zA-Z ]*?)</strong> at <strong>(.*?)</strong>. We will see you at"
+               r" <strong>(\d+:\d+) (AM|PM)</strong> on <strong>("
+               r".*?)</strong>, <strong>(.*?)</strong>")
 
     calendar_events: List[Event] = []
     for msg in messages:
@@ -130,15 +147,31 @@ def main():
         if content:
             match = re.search(pattern, content)
             if match:
+                time = match.group(3)
+                meridiem = match.group(4)
+                date = match.group(6)
+
                 calendar_events.append(
                     Event(
-                        time=match.group(1),
-                        meridiem=match.group(2),
-                        day_of_week=match.group(3),
-                        date=match.group(4),
+                        instructor=match.group(1),
+                        location=match.group(2).split('-')[0],
+                        timestamp=get_timestamp(time, meridiem, date),
+                        time=time,
+                        meridiem=meridiem,
+                        day_of_week=match.group(5),
+                        date=date,
                     )
                 )
+            else:
+                print("no match")
 
+    calendar_events = [e for e in calendar_events if e.timestamp > today.timestamp()]
+    calendar_events.sort(key=lambda e: e.timestamp)
+
+    if len(calendar_events) > 0:
+        next_event = calendar_events[0]
+        save_ppm_file(next_event.time + next_event.meridiem)
+        save_events_for_frontend(calendar_events)
     calendar_service = get_calendar_service()
 
     for event in calendar_events:
@@ -150,9 +183,9 @@ def main():
 
         create_calendar_event(
             service=calendar_service,
-            summary="Demo Yoga Class",
+            summary="Yoga Class in " + event.location,
             location="",
-            description="description",
+            description="with instructor " + event.instructor,
             start_datetime=start_datetime,
             end_datetime=start_datetime + datetime.timedelta(minutes=60),
             timezone="America/New_York",

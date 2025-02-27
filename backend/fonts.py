@@ -1,4 +1,4 @@
-font = {
+binary_font = {
     'A': [
         0b01110,
         0b10001,
@@ -405,45 +405,3 @@ font = {
         0b00000
     ]
 }
-
-def draw_character(image, char_offset, char_data):
-    char_width = 5
-    char_height = 7
-    width = len(image[0])
-    height = len(image)
-    skip_x = 1 + char_offset * (char_width + 1)
-    top_margin = 4
-
-    for row_index in range(char_height):
-        char_row_bits = char_data[row_index]
-        for col_index in range(char_width):
-            pixel = (char_row_bits >> (4 - col_index)) & 1
-            if pixel:
-                img_x = skip_x + col_index
-                img_y = row_index + top_margin
-                if 0 <= img_x < width and 0 <= img_y < height:
-                    image[img_y][img_x] = (255, 0, 0)  # red pixel
-                else:
-                    raise Exception('Pixel {} out of bounds'.format(row_index))
-
-
-def create_text_ppm(text, output_file="output.ppm", width=32, height=16):
-    image = [[(0, 0, 0) for _ in range(width)] for _ in range(height)]
-
-    for char_offset, char in enumerate(text):
-        if char.upper() not in font:
-            raise Exception(f"Unknown character {char}")
-        char_data = font[char.upper()]
-        draw_character(image, char_offset, char_data)
-
-    with open(output_file, 'wb') as f:
-        # PPM header
-        f.write(b"P6\n32 16\n255\n")
-        # Image contents
-        for row in image:
-            for pixel in row:
-                f.write(bytes(pixel))
-
-# Example usage
-if __name__ == "__main__":
-    create_text_ppm("8:45a")

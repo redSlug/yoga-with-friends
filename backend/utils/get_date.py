@@ -3,11 +3,7 @@ import datetime
 from data_types.all import Event
 
 
-def convert_to_datetime(event_data: Event) -> datetime.datetime:
-    time_str = event_data.time
-    meridiem = event_data.meridiem
-    date_str = event_data.date
-
+def _get_date(time_str, meridiem, date_str) -> datetime:
     hour, minute = map(int, time_str.split(":"))
     if meridiem == "PM" and hour < 12:
         hour += 12
@@ -36,3 +32,10 @@ def convert_to_datetime(event_data: Event) -> datetime.datetime:
     # TODO: intuit based on current and target month and year
     year = datetime.datetime.now().year
     return datetime.datetime(year, month, day, hour, minute)
+
+def get_timestamp(time_str, meridiem, date_str) -> float:
+    return _get_date(time_str, meridiem, date_str).timestamp()
+
+
+def convert_to_datetime(event: Event) -> datetime:
+    return _get_date(event.time, event.meridiem, event.date)
