@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import datetime
@@ -10,7 +11,7 @@ from googleapiclient.discovery import build
 import base64
 
 from data_types.all import Event
-from get_date import convert_to_datetime
+from utils.get_date import convert_to_datetime
 
 SCOPES: List[str] = [
     "https://www.googleapis.com/auth/gmail.readonly",
@@ -99,6 +100,7 @@ def get_message_content(service, msg_id):
         service.users().messages().get(userId="me", id=msg_id, format="full").execute()
     )
     payload = message["payload"]
+
     if "body" in payload and "data" in payload["body"]:
         data = payload["body"]["data"]
         return base64.urlsafe_b64decode(data).decode("utf-8")
@@ -148,7 +150,7 @@ def main():
 
         create_calendar_event(
             service=calendar_service,
-            summary="Yoga class",
+            summary="Demo Yoga Class",
             location="",
             description="description",
             start_datetime=start_datetime,
