@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "deploy": "concurrently \"vite\" \"cd ../backend && source venv/bin/activate && python forever.py\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "prettier:check": "prettier . --check",
@@ -12,6 +13,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "concurrently": "^9.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
