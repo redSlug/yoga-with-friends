@@ -33,8 +33,20 @@ def _get_date(time_str, meridiem, date_str) -> datetime:
     year = datetime.datetime.now().year
     return datetime.datetime(year, month, day, hour, minute)
 
+
 def get_timestamp(time_str, meridiem, date_str) -> float:
     return _get_date(time_str, meridiem, date_str).timestamp()
+
+
+def get_wait_list_timestamp(time_str, meridiem, month, day) -> float:
+    date_str = f"{month} {day}"
+    return _get_date(time_str, meridiem, date_str).timestamp()
+
+
+def get_cancellation_timestamp(date, time_str, meridiem):
+    date_str = date.replace("/", "-") + "-" + time_str + "-" + meridiem
+    date_object = datetime.datetime.strptime(date_str, "%m-%d-%Y-%H:%M-%p")
+    return date_object.timestamp()
 
 
 def convert_to_datetime(event: Event) -> datetime:
