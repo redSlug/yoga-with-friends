@@ -1,20 +1,15 @@
-
 from ics import Calendar, Event
 import json
 import datetime
 import pytz
-import os
 
-def create_file():
-    print("Creating ICS file")
-    with open('example/events_output.json', 'r') as file:
-        data = json.load(file)
 
+def create_calendar(data, filepath):
     calendar = Calendar()
     for item in data:
-        timestamp = item['timestamp']
-        location = item['location']
-        instructor = item['instructor']
+        timestamp = item["timestamp"]
+        location = item["location"]
+        instructor = item["instructor"]
         event = Event()
         event.name = f"Yoga with {instructor} in {location}"
         # Creates time in UTC timezone because it's what calendar expects
@@ -23,14 +18,13 @@ def create_file():
         event.end = begin_time + datetime.timedelta(hours=1)
         calendar.events.add(event)
 
-
-    BASE_PATH = os.path.dirname(__file__)
-    filepath = os.path.abspath(
-        os.path.join(BASE_PATH, "..", "frontend", "src", "data", "yoga_calendar.ics")
-    )
-    with open(filepath, 'w') as f:
+    with open(filepath, "w") as f:
+        print("saving ICS file to", filepath)
         f.writelines(calendar)
 
 
-if __name__ == '__main__':
-    create_file()
+if __name__ == "__main__":
+    print("Creating ICS file with example data from example/events_output.json")
+    with open("example/events_output.json", "r") as file:
+        data = json.load(file)
+    create_calendar(data)

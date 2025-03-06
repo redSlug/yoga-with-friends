@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
 import './App.css';
-import events from './data/events.json';
+import events from './assets/yoga.json';
 
 type Event = {
   instructor: string;
@@ -12,18 +11,13 @@ type Event = {
   date: string;
 };
 
+
 function App() {
-  const [eventData, setEventData] = useState<Array<Event>>([]);
-
-  useEffect(() => {
-    setEventData(events);
-  }, []);
-
   return (
     <div className="App">
       <h1>Bradley's Yoga Classes</h1>
       <ul>
-        {eventData.map((event, index) => (
+        {events.map((event: Event, index: number) => (
           <li key={index}>
               {event.time}{event.meridiem} {event.date} - {event.instructor} - {event.location}
           </li>

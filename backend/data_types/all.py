@@ -4,9 +4,11 @@ from dataclasses import dataclass, asdict
 
 @dataclass
 class Event:
+    msg_id: str
+    event_type: str
     instructor: str
     location: str
-    timestamp: float
+    timestamp: int
     time: str
     meridiem: str
     day_of_week: str

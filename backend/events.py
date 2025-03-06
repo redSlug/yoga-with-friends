@@ -2,8 +2,9 @@ import json
 import os
 import re
 import datetime
-from typing import List, Any, Dict
+from typing import List
 
+from ics_calendar import create_calendar
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -13,7 +14,6 @@ import base64
 from ppm_generator import create_image_file
 from data_types.all import Event
 from utils.get_date import (
-    convert_to_datetime,
     get_timestamp,
     get_cancellation_timestamp,
     get_wait_list_timestamp,
@@ -28,26 +28,35 @@ LOOKBACK_DAYS = 2
 BASE_PATH = os.path.dirname(__file__)
 
 
+def get_public_file_path(file_name):
+    return os.path.abspath(
+        os.path.join(BASE_PATH, "..", "frontend", "public", file_name)
+    )
+
+
+def get_assets_file_path(file_name):
+    return os.path.abspath(
+        os.path.join(BASE_PATH, "..", "frontend", "src", "assets", file_name)
+    )
+
+
 def save_ppm_file(text):
-    filepath = os.path.abspath(os.path.join(BASE_PATH, "..", "output.ppm"))
-    create_image_file(text, filepath)
+    create_image_file(text, get_public_file_path("yoga.ppm"))
+
+
+def get_events_json(events: List[Event]) -> str:
+    return json.dumps([event.__dict__ for event in events])
 
 
 def save_events_for_frontend(events: List[Event]):
-    filepath = os.path.abspath(
-        os.path.join(BASE_PATH, "..", "frontend", "src", "data", "events.json")
-    )
-    with open(filepath, "w") as f:
-        f.write(json.dumps([event.__dict__ for event in events]))
-    print(f"wrote json to file: ", filepath)
+    static_file_path = get_assets_file_path("yoga.json")
+    with open(static_file_path, "w") as f:
+        f.write(get_events_json(events))
+    print(f"wrote json to file: ", static_file_path)
 
 
 def get_gmail_service():
     return get_service("gmail", "v1")
-
-
-def get_calendar_service():
-    return get_service("calendar", "v3")
 
 
 def get_service(name, version):
@@ -65,37 +74,6 @@ def get_service(name, version):
         with open("token.json", "w") as token:
             token.write(creds.to_json())
     return build(name, version, credentials=creds)
-
-
-def create_calendar_event(
-    service: Any,
-    summary: str,
-    location: str,
-    description: str,
-    start_datetime: datetime.datetime,
-    end_datetime: datetime.datetime,
-    timezone: str = "America/New_York",
-) -> Dict[str, Any]:
-    start = start_datetime.isoformat()
-    event: Dict[str, Any] = {
-        "summary": summary,
-        "location": location,
-        "description": description,
-        "start": {
-            "dateTime": start,
-            "timeZone": timezone,
-        },
-        "end": {
-            "dateTime": end_datetime.isoformat(),
-            "timeZone": timezone,
-        },
-    }
-    try:
-        event = service.events().insert(calendarId="primary", body=event).execute()
-        return event
-    except Exception as error:
-        print(f"An error occurred creating event w/ start {start}: {error}")
-        return {}
 
 
 def search_messages(service, query):
@@ -170,6 +148,8 @@ def get_wait_list_reservations(service, today):
 
         calendar_events.append(
             Event(
+                msg_id=msg_id,
+                event_type="reservation",
                 instructor="from wait list",
                 location=location,
                 timestamp=get_wait_list_timestamp(time, meridiem, month, day),
@@ -220,6 +200,8 @@ def get_reservations(service, today):
 
         calendar_events.append(
             Event(
+                msg_id=msg_id,
+                event_type="reservation",
                 instructor=match.group(1),
                 location=match.group(2).split("-")[0],
                 timestamp=get_timestamp(time, meridiem, date),
@@ -270,6 +252,8 @@ def get_cancellations(service, today):
 
         cancellation_events.append(
             Event(
+                msg_id=msg_id,
+                event_type="cancellation",
                 instructor="",
                 location="",
                 timestamp=get_cancellation_timestamp(date, time, meridiem),
@@ -294,7 +278,7 @@ def main():
         cancelled_timestamps,
     )
 
-    # TODO: case where person cancels then re-registers; look at email sent time
+    # TODO: handle case where person cancels then re-registers; look at email sent time
     reservations = [r for r in reservations if r.timestamp not in cancelled_timestamps]
     print(f"reservations count after cancellations={ len(reservations)}")
     reservations = [e for e in reservations if e.timestamp > today.timestamp()]
@@ -304,25 +288,12 @@ def main():
         next_event = reservations[0]
         save_ppm_file(next_event.time + next_event.meridiem)
         save_events_for_frontend(reservations)
-
-    calendar_service = get_calendar_service()
-
-    for event in reservations:
-        print("creating event", event)
-        start_datetime = convert_to_datetime(event)
-
-        create_calendar_event(
-            service=calendar_service,
-            summary="Yoga Class in " + event.location,
-            location="",
-            description="with instructor " + event.instructor,
-            start_datetime=start_datetime,
-            end_datetime=start_datetime + datetime.timedelta(minutes=60),
-            timezone="America/New_York",
+        create_calendar(
+            json.loads(get_events_json(reservations)), get_public_file_path("yoga.ics")
         )
     return reservations
 
 
 if __name__ == "__main__":
     events = main()
-    print(events)
+    print("Done.")
