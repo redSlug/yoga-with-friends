@@ -26,6 +26,7 @@ sudo rpi-rgb-led-matrix/examples-api-use/demo -D 1 output.ppm --led-no-hardware-
 ## Troubleshooting
 - if you encounter `ModuleNotFoundError: No module named 'google'`, there could a discrepancy 
   between the python version you used to create your virtualenv and run the script
+- to check date on OS X, run `date -r 1742301900`
 
 ## Future Ideas / Enhancements
 * handle "Reservation canceled" by skipping them and removing them from the calendar
