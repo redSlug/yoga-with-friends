@@ -4,6 +4,7 @@ import re
 import datetime
 from typing import List
 
+from publisher import upload_to_s3
 from ics_calendar import create_calendar
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -291,6 +292,9 @@ def main():
         create_calendar(
             json.loads(get_events_json(reservations)), get_public_file_path("yoga.ics")
         )
+        upload_to_s3(get_public_file_path('yoga.ics'), 'yoga.ics')
+        upload_to_s3(get_public_file_path('yoga.ppm'), 'yoga.ppm')
+
     return reservations
 
 
