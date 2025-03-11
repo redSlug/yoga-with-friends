@@ -1,4 +1,4 @@
-# yoga-with-no-fees backend
+# yoga-with-friends backend
 
 ### Setup
 
@@ -8,19 +8,9 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-
 ### Run
 ```bash
 python events.py
-```
-
-## Generate and yoga class time on LED grid
-```bash
-# takes up to 20 seconds to copy
-scp output.ppm pi@jampi.local:~/
-
-ssh pi@jampi.local
-sudo rpi-rgb-led-matrix/examples-api-use/demo -D 1 output.ppm --led-no-hardware-pulse --led-rows=16 --led-cols=32 -m 0 --led-brightness=50
 ```
 
 ## Troubleshooting

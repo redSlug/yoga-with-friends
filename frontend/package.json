@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "deploy": "concurrently \"vite\" \"cd ../backend && source venv/bin/activate && python forever.py\"",
+    "deploy": "concurrently \"vite\" \"cd ../backend && python forever.py\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "prettier:check": "prettier . --check",

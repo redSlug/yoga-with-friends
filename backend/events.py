@@ -22,7 +22,7 @@ from utils.get_date import (
 
 SCOPES: List[str] = [
     "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/userinfo.profile"
 ]
 LOOKBACK_DAYS = 2
 
