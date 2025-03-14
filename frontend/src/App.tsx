@@ -15,11 +15,11 @@ type Event = {
 function App() {
   return (
     <div className="App">
-      <h1>Bradley's Yoga Classes</h1>
+      <h1>Enrolled Yoga Classes</h1>
       <ul>
         {events.map((event: Event, index: number) => (
           <li key={index}>
-              {event.time}{event.meridiem} {event.date} - {event.instructor} - {event.location}
+              {event.time}{event.meridiem} {event.date} - {event.instructor.split(" ")[0]} - {event.location}
           </li>
         ))}
       </ul>

@@ -182,9 +182,7 @@ def get_reservations(service, start_date_str):
 
 def get_cancellations(service, start_date_str):
     print("gathering cancellations")
-    query = (
-        f'from:info@heatwise-studio.com subject:"Reservation canceled" after:{start_date_str}'
-    )
+    query = f'from:info@heatwise-studio.com subject:"Reservation canceled" after:{start_date_str}'
     messages = search_messages(service, query)
     calendar_events: List[Event] = []
 
@@ -239,24 +237,28 @@ def main(gmail_service):
     cancellations = get_cancellations(gmail_service, start_date)
     cancelled_timestamps = set([e.timestamp for e in cancellations])
     print(
-        f"reservations count={ len(reservations)}, cancelled timestamps=",
+        f"reservations count={len(reservations)}, cancelled timestamps=",
         cancelled_timestamps,
     )
 
     # TODO: handle case where person cancels then re-registers; look at email sent time
     reservations = [r for r in reservations if r.timestamp not in cancelled_timestamps]
     print(f"reservations count after cancellations={ len(reservations)}")
-    reservations = [e for e in reservations if e.timestamp > today.timestamp()]
-    reservations.sort(key=lambda e: e.timestamp)
+    future_reservations = [e for e in reservations if e.timestamp > today.timestamp()]
+    future_reservations.sort(key=lambda e: e.timestamp)
 
-    if len(reservations) > 0:
-        next_event = reservations[0]
+    print(f"future_reservations count={len(future_reservations)}")
+
+    if len(future_reservations) > 0:
+        next_event = future_reservations[0]
         save_ppm_file(next_event.time + next_event.meridiem)
-        save_events_for_frontend(reservations)
+        save_events_for_frontend(future_reservations)
         create_calendar(
-            json.loads(get_events_json(reservations)), get_public_file_path("yoga.ics")
+            json.loads(get_events_json(future_reservations)),
+            get_public_file_path("yoga.ics"),
         )
     return gmail_service
+
 
 if __name__ == "__main__":
     events = main(get_service())
