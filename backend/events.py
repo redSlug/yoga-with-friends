@@ -1,43 +1,34 @@
+import base64
+import datetime
 import json
 import os
 import re
-import datetime
+from pathlib import Path
 from typing import List
 
-from publisher import upload_to_s3
-from ics_calendar import create_calendar
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-import base64
-
-from ppm_generator import create_image_file
 from data_types.all import Event
+from email_client import get_service
+from ics_calendar import create_calendar
+from ppm_generator import create_image_file
+from publisher import upload_to_s3
 from utils.get_date import (
     get_timestamp,
     get_cancellation_timestamp,
     get_wait_list_timestamp,
 )
 
-SCOPES: List[str] = [
-    "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/userinfo.profile"
-]
 LOOKBACK_DAYS = 2
-
-BASE_PATH = os.path.dirname(__file__)
 
 
 def get_public_file_path(file_name):
     return os.path.abspath(
-        os.path.join(BASE_PATH, "..", "frontend", "public", file_name)
+        Path(Path.cwd().parent.joinpath("frontend", "public", file_name))
     )
 
 
 def get_assets_file_path(file_name):
     return os.path.abspath(
-        os.path.join(BASE_PATH, "..", "frontend", "src", "assets", file_name)
+        Path(Path.cwd().parent.joinpath("frontend", "src", "assets", file_name))
     )
 
 
@@ -54,27 +45,6 @@ def save_events_for_frontend(events: List[Event]):
     with open(static_file_path, "w") as f:
         f.write(get_events_json(events))
     print(f"wrote json to file: ", static_file_path)
-
-
-def get_gmail_service():
-    return get_service("gmail", "v1")
-
-
-def get_service(name, version):
-    creds = None
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-
-    # user needs to log in and grant access
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
-    return build(name, version, credentials=creds)
 
 
 def search_messages(service, query):
@@ -268,7 +238,7 @@ def get_cancellations(service, today):
 
 
 def main():
-    gmail_service = get_gmail_service()
+    gmail_service = get_service()
     today = datetime.datetime.now()
     reservations = get_reservations(gmail_service, today)
     reservations.extend(get_wait_list_reservations(gmail_service, today))
@@ -292,8 +262,8 @@ def main():
         create_calendar(
             json.loads(get_events_json(reservations)), get_public_file_path("yoga.ics")
         )
-        upload_to_s3(get_public_file_path('yoga.ics'), 'yoga.ics')
-        upload_to_s3(get_public_file_path('yoga.ppm'), 'yoga.ppm')
+        upload_to_s3(get_public_file_path("yoga.ics"), "yoga.ics")
+        upload_to_s3(get_public_file_path("yoga.ppm"), "yoga.ppm")
 
     return reservations
 

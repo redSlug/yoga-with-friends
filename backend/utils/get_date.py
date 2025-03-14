@@ -34,7 +34,7 @@ def _get_date(time_str, meridiem, date_str) -> datetime:
     return datetime.datetime(year, month, day, hour, minute)
 
 
-def get_timestamp(time_str, meridiem, date_str) -> float:
+def get_timestamp(time_str, meridiem, date_str) -> int:
     return int(_get_date(time_str, meridiem, date_str).timestamp())
 
 
