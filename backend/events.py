@@ -10,14 +10,13 @@ from data_types.all import Event
 from email_client import get_service
 from ics_calendar import create_calendar
 from ppm_generator import create_image_file
-from publisher import upload_to_s3
 from utils.get_date import (
     get_timestamp,
     get_cancellation_timestamp,
     get_wait_list_timestamp,
 )
 
-LOOKBACK_DAYS = 2
+LOOKBACK_DAYS = 30
 
 
 def get_public_file_path(file_name):
@@ -76,11 +75,9 @@ def get_message_content(service, msg_id):
         return base64.urlsafe_b64decode(data).decode("utf-8")
 
 
-def get_wait_list_reservations(service, today):
+def get_wait_list_reservations(service, start_date_str):
     print("gathering wait list reservations")
-    two_days_ago = today - datetime.timedelta(days=LOOKBACK_DAYS)
-    date_str = two_days_ago.strftime("%Y/%m/%d")
-    query = f'from:info@heatwise-studio.com subject:"Heatwise waitlist update: You got a spot!" after:{date_str}'
+    query = f'from:info@heatwise-studio.com subject:"Heatwise waitlist update: You got a spot!" after:{start_date_str}'
     messages = search_messages(service, query)
     calendar_events: List[Event] = []
 
@@ -133,11 +130,9 @@ def get_wait_list_reservations(service, today):
     return calendar_events
 
 
-def get_reservations(service, today):
+def get_reservations(service, start_date_str):
     print("gathering reservations")
-    two_days_ago = today - datetime.timedelta(days=LOOKBACK_DAYS)
-    date_str = two_days_ago.strftime("%Y/%m/%d")
-    query = f'from:info@heatwise-studio.com subject:"Your spot has been reserved" after:{date_str}'
+    query = f'from:info@heatwise-studio.com subject:"Your spot has been reserved" after:{start_date_str}'
     messages = search_messages(service, query)
     calendar_events: List[Event] = []
 
@@ -185,12 +180,10 @@ def get_reservations(service, today):
     return calendar_events
 
 
-def get_cancellations(service, today):
+def get_cancellations(service, start_date_str):
     print("gathering cancellations")
-    two_days_ago = today - datetime.timedelta(days=LOOKBACK_DAYS)
-    date_str = two_days_ago.strftime("%Y/%m/%d")
     query = (
-        f'from:info@heatwise-studio.com subject:"Reservation canceled" after:{date_str}'
+        f'from:info@heatwise-studio.com subject:"Reservation canceled" after:{start_date_str}'
     )
     messages = search_messages(service, query)
     calendar_events: List[Event] = []
@@ -237,12 +230,13 @@ def get_cancellations(service, today):
     return cancellation_events
 
 
-def main():
-    gmail_service = get_service()
+def main(gmail_service):
     today = datetime.datetime.now()
-    reservations = get_reservations(gmail_service, today)
-    reservations.extend(get_wait_list_reservations(gmail_service, today))
-    cancellations = get_cancellations(gmail_service, today)
+    start_date = today - datetime.timedelta(days=LOOKBACK_DAYS)
+    start_date_str = start_date.strftime("%Y/%m/%d")
+    reservations = get_reservations(gmail_service, start_date_str)
+    reservations.extend(get_wait_list_reservations(gmail_service, start_date))
+    cancellations = get_cancellations(gmail_service, start_date)
     cancelled_timestamps = set([e.timestamp for e in cancellations])
     print(
         f"reservations count={ len(reservations)}, cancelled timestamps=",
@@ -262,9 +256,8 @@ def main():
         create_calendar(
             json.loads(get_events_json(reservations)), get_public_file_path("yoga.ics")
         )
-    return reservations
-
+    return gmail_service
 
 if __name__ == "__main__":
-    events = main()
+    events = main(get_service())
     print("Done.")

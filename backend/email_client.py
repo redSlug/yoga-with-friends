@@ -4,7 +4,6 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
-
 def get_credentials(token_path):
     creds = None
     with open(token_path, "r") as token_file:

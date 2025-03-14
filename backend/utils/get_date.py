@@ -38,7 +38,7 @@ def get_timestamp(time_str, meridiem, date_str) -> int:
     return int(_get_date(time_str, meridiem, date_str).timestamp())
 
 
-def get_wait_list_timestamp(time_str, meridiem, month, day) -> float:
+def get_wait_list_timestamp(time_str, meridiem, month, day) -> int:
     date_str = f"{month} {day}"
     return int(_get_date(time_str, meridiem, date_str).timestamp())
 
