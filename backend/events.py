@@ -144,7 +144,7 @@ def get_reservations(service, start_date_str):
     # with <strong>Erin Lyons</strong> at <strong>Park Slope - 7th Ave</strong>.
     # We will see you at <strong>8:45 AM</strong> on <strong>Tuesday</strong>, <strong>March 4</strong>.</p>
     pattern = (
-        r"with <strong>([a-zA-Z ]*?)</strong> at <strong>(.*?)</strong>. We will see you at"
+        r"with <strong>([a-zA-Z. ]*?)</strong> at <strong>(.*?)</strong>. We will see you at"
         r" <strong>(\d+:\d+) (AM|PM)</strong> on <strong>("
         r".*?)</strong>, <strong>(.*?)</strong>"
     )
