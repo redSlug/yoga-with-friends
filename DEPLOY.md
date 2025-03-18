@@ -31,5 +31,5 @@ kubectl describe pod yoga-with-friends-POD_ID -n yoga-with-friends
 kubectl logs yoga-with-friends-POD_ID -n yoga-with-friends
 kubectl delete pod yoga-with-friends-POD_ID -n yoga-with-friends
 docker buildx build --no-cache -f Dockerfile -t bdettmer/yoga-with-friends .
-kubectl exec -n yoga-with-friends -it yoga-with-friends-POD_ID /bin/s
+kubectl exec -n yoga-with-friends -it yoga-with-friends-POD_ID /bin/sh
 ```
