@@ -13,7 +13,10 @@ paste into `yoga-with-friends-credentials.yaml` then deploy
 kubectl apply -f k8s/secrets/yoga-with-friends-credentials.yaml -f k8s/yoga-with-friends/deployment.yaml
 
 ## Troubleshooting
-* `Unable to connect to the server: tls: failed to verify certificate: x509` likely means something with the cluster changed, and the fix is to `rm -rf ~/.kube` and then `scp -r bdettmer@broome.cluster.recurse.com:.kube ~/.kube`
+* `Unable to connect to the server: tls: failed to verify certificate: x509` 
+  * likely means something with the cluster changed, and the fix is to `rm -rf ~/.kube` and then `scp -r bdettmer@broome.cluster.recurse.com:.kube ~/.kube`
+* verify certificate is set up correctly for the cluster by visiting https://prometheus.recurse.cloud/graph or https://grafana.recurse.cloud/
+* port forward using `kubectl -n yoga-with-friends port-forward services/yoga-with-friends 8000:80`and visit http://localhost:8000/
 
 ### Helpful commands
 ```bash
