@@ -10,6 +10,7 @@ from data_types.all import Event
 from email_client import get_service
 from ics_calendar import create_calendar
 from ppm_generator import create_image_file
+from publisher import upload_to_s3
 from utils.get_date import (
     get_timestamp,
     get_cancellation_timestamp,
@@ -256,6 +257,9 @@ def main(gmail_service):
             json.loads(get_events_json(future_reservations)),
             get_public_file_path("yoga.ics"),
         )
+        upload_to_s3(get_public_file_path('yoga.ics'), 'yoga.ics')
+        upload_to_s3(get_public_file_path("yoga.ppm"), 'yoga.ppm')
+        upload_to_s3(get_assets_file_path("yoga.json"), 'yoga.json')
     return gmail_service
 
 

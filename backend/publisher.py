@@ -24,4 +24,4 @@ def upload_to_s3(local_file, s3_file):
 
 
 if __name__ == "__main__":
-    upload_to_s3("../frontend/public/yoga.ics", "yoga_1.ics")
+    upload_to_s3("../frontend/public/yoga.ics", "yoga.ics")
