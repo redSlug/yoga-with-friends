@@ -131,6 +131,12 @@ def get_wait_list_reservations(service, start_date_str):
     return calendar_events
 
 
+def maybe_strip(s):
+    try:
+        return s.strip()
+    except s:
+        return ""
+
 def get_reservations(service, start_date_str):
     print("gathering reservations")
     query = f'from:info@heatwise-studio.com subject:"Your spot has been reserved" after:{start_date_str}'
@@ -169,12 +175,12 @@ def get_reservations(service, start_date_str):
             Event(
                 msg_id=msg_id,
                 event_type="reservation",
-                instructor=match.group(1),
-                location=match.group(2).split("-")[0],
+                instructor=maybe_strip(match.group(1)),
+                location=maybe_strip(match.group(2).split("-")[0]),
                 timestamp=get_timestamp(time, meridiem, date),
                 time=time,
                 meridiem=meridiem,
-                day_of_week=match.group(5),
+                day_of_week=maybe_strip(match.group(5)),
                 date=date,
             )
         )
@@ -259,7 +265,7 @@ def main(gmail_service):
         )
         upload_to_s3(get_public_file_path('yoga.ics'), 'yoga.ics')
         upload_to_s3(get_public_file_path("yoga.ppm"), 'yoga.ppm')
-        upload_to_s3(get_assets_file_path("yoga.json"), 'yoga.json')
+        upload_to_s3(get_public_file_path("yoga.json"), 'yoga.json')
     return gmail_service
 
 
