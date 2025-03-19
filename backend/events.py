@@ -41,7 +41,7 @@ def get_events_json(events: List[Event]) -> str:
 
 
 def save_events_for_frontend(events: List[Event]):
-    static_file_path = get_assets_file_path("yoga.json")
+    static_file_path = get_public_file_path("yoga.json")
     with open(static_file_path, "w") as f:
         f.write(get_events_json(events))
     print(f"wrote json to file: ", static_file_path)
