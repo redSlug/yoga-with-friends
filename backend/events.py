@@ -16,7 +16,7 @@ from utils.get_date import (
     get_wait_list_timestamp,
 )
 
-LOOKBACK_DAYS = 30
+LOOK_BACK_DAYS = 30
 
 
 def get_public_file_path(file_name):
@@ -230,9 +230,8 @@ def get_cancellations(service, start_date_str):
 
 def main(gmail_service):
     today = datetime.datetime.now()
-    start_date = today - datetime.timedelta(days=LOOKBACK_DAYS)
-    start_date_str = start_date.strftime("%Y/%m/%d")
-    reservations = get_reservations(gmail_service, start_date_str)
+    start_date = (today - datetime.timedelta(days=LOOK_BACK_DAYS)).strftime("%Y/%m/%d")
+    reservations = get_reservations(gmail_service, start_date)
     reservations.extend(get_wait_list_reservations(gmail_service, start_date))
     cancellations = get_cancellations(gmail_service, start_date)
     cancelled_timestamps = set([e.timestamp for e in cancellations])
