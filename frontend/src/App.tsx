@@ -37,7 +37,7 @@ function App() {
     if (loading) {
         return <p>Loading...</p>;
     }
-    
+
     const parkSlopeClasses = yogaData.filter((e) => e.location === "Park Slope");
     const otherClasses = yogaData.filter((e) => e.location !== "Park Slope");
     return (

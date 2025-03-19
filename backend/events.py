@@ -76,6 +76,54 @@ def get_message_content(service, msg_id):
         return base64.urlsafe_b64decode(data).decode("utf-8")
 
 
+def get_wait_listed(service, start_date_str):
+    print("gathering wait list potential reservations")
+    query = f'from:info@heatwise-studio.com subject:"You\'re on the waitlist" after:{start_date_str}'
+    messages = search_messages(service, query)
+    calendar_events: List[Event] = []
+
+    if not messages:
+        print("No matching wait list potential reservation emails found.")
+        return calendar_events
+
+    # For now, you have been added to the waitlist for Some Like it Hot with Arianna Neikrug at 9:30 AM on Saturday, March 22.
+    pattern = (
+        r"waitlist for Some Like it Hot with Arianna Neikrug at (\d+:\d+) (AM|PM) on (.*?), (.*?)."
+    )
+
+    for msg in messages:
+        msg_id = msg["id"]
+        content = get_message_content(service, msg_id)
+
+        if not content:
+            print("no waitlist content")
+            continue
+
+        match = re.search(pattern, content)
+        if not match:
+            print(f"wait list regex didn't match {pattern}, content=", content)
+
+        time = match.group(1)
+        meridiem = match.group(2)
+        day_of_week = match.group(3)
+        date = match.group(4)
+
+        calendar_events.append(
+            Event(
+                msg_id=msg_id,
+                event_type="reservation",
+                instructor="from wait list",
+                location="unknown",
+                timestamp=get_timestamp(time, meridiem, date),
+                time=time,
+                meridiem=meridiem,
+                day_of_week=day_of_week,
+                date=date,
+            )
+        )
+    return calendar_events
+
+
 def get_wait_list_reservations(service, start_date_str):
     print("gathering wait list reservations")
     query = f'from:info@heatwise-studio.com subject:"Heatwise waitlist update: You got a spot!" after:{start_date_str}'
