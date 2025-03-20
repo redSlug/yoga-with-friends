@@ -10,8 +10,12 @@ def create_calendar(data, filepath):
         timestamp = item["timestamp"]
         location = item["location"]
         instructor = item["instructor"]
+        enrolled_name = f"Yoga in {location} with {instructor}"
+        waitlisted_name = f"Waitlisted with {instructor}"
+        is_waitlisted = item['waitlisted'] == True
+
         event = Event()
-        event.name = f"Yoga with {instructor} in {location}"
+        event.name = waitlisted_name if is_waitlisted else enrolled_name
         # Creates time in UTC timezone because it's what calendar expects
         begin_time = datetime.datetime.fromtimestamp(timestamp, tz=pytz.utc)
         event.begin = begin_time

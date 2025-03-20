@@ -166,7 +166,7 @@ def get_wait_list_reservations(service, start_date_str, instructors):
         day = match.group(5)
         location = match.group(6).split("-")[0]
         timestamp = get_wait_list_timestamp(time, meridiem, month, day)
-        instructor = instructors[timestamp] if timestamp in instructors else 'unknown'
+        instructor = instructors[timestamp] if timestamp in instructors else ''
         calendar_events.append(
             Event(
                 msg_id=msg_id,
