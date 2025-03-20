@@ -41,6 +41,8 @@ function App() {
         return <p>Loading...</p>;
     }
 
+    console.log("yogaData is", yogaData)
+
     const knownLocations = ["Park Slope", "Brooklyn Heights"]
 
     const parkSlopeClasses = yogaData.filter((e) => e.location === "Park Slope" && !e.waitlisted);
