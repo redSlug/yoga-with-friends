@@ -76,7 +76,7 @@ def get_message_content(service, msg_id):
         return base64.urlsafe_b64decode(data).decode("utf-8")
 
 
-def get_wait_listed(service, start_date_str):
+def get_added_to_waitlist(service, start_date_str):
     print("gathering wait list potential reservations")
     query = f'from:info@heatwise-studio.com subject:"You\'re on the waitlist" after:{start_date_str}'
     messages = search_messages(service, query)
@@ -86,9 +86,10 @@ def get_wait_listed(service, start_date_str):
         print("No matching wait list potential reservation emails found.")
         return calendar_events
 
-    # For now, you have been added to the waitlist for Some Like it Hot with Arianna Neikrug at 9:30 AM on Saturday, March 22.
+    # <p>For now, you have been added to the waitlist for Some Like it Hot with Jeremy Good at
+    # 9:00 AM on Monday, March 31.</p>
     pattern = (
-        r"waitlist for Some Like it Hot with Arianna Neikrug at (\d+:\d+) (AM|PM) on (.*?), (.*?)."
+       r"with ([a-zA-Z ]+) at (\d+:\d+) (AM|PM) on ([\D+]+?), ([a-zA-Z0-9 ]+).</p>"
     )
 
     for msg in messages:
@@ -103,28 +104,30 @@ def get_wait_listed(service, start_date_str):
         if not match:
             print(f"wait list regex didn't match {pattern}, content=", content)
 
-        time = match.group(1)
-        meridiem = match.group(2)
-        day_of_week = match.group(3)
-        date = match.group(4)
+        instructor = maybe_strip(match.group(1))
+        time = maybe_strip(match.group(2))
+        meridiem = match.group(3)
+        day_of_week = maybe_strip(match.group(4))
+        date = maybe_strip(match.group(5))
 
         calendar_events.append(
             Event(
                 msg_id=msg_id,
-                event_type="reservation",
-                instructor="from wait list",
+                event_type="waitlist",
+                instructor=instructor,
                 location="unknown",
                 timestamp=get_timestamp(time, meridiem, date),
                 time=time,
                 meridiem=meridiem,
                 day_of_week=day_of_week,
                 date=date,
+                waitlisted=True,
             )
         )
     return calendar_events
 
 
-def get_wait_list_reservations(service, start_date_str):
+def get_wait_list_reservations(service, start_date_str, instructors):
     print("gathering wait list reservations")
     query = f'from:info@heatwise-studio.com subject:"Heatwise waitlist update: You got a spot!" after:{start_date_str}'
     messages = search_messages(service, query)
@@ -162,18 +165,20 @@ def get_wait_list_reservations(service, start_date_str):
         month = match.group(4)
         day = match.group(5)
         location = match.group(6).split("-")[0]
-
+        timestamp = get_wait_list_timestamp(time, meridiem, month, day)
+        instructor = instructors[timestamp] if timestamp in instructors else 'unknown'
         calendar_events.append(
             Event(
                 msg_id=msg_id,
                 event_type="reservation",
-                instructor="from wait list",
+                instructor=instructor,
                 location=location,
-                timestamp=get_wait_list_timestamp(time, meridiem, month, day),
+                timestamp=timestamp,
                 time=time,
                 meridiem=meridiem,
                 day_of_week=day_of_week,
                 date=f"{month} {day}",
+                waitlisted=False,
             )
         )
     return calendar_events
@@ -230,6 +235,7 @@ def get_reservations(service, start_date_str):
                 meridiem=meridiem,
                 day_of_week=maybe_strip(match.group(5)),
                 date=date,
+                waitlisted=False,
             )
         )
     return calendar_events
@@ -278,6 +284,7 @@ def get_cancellations(service, start_date_str):
                 meridiem=meridiem,
                 day_of_week="",
                 date=date,
+                waitlisted=False,
             )
         )
     return cancellation_events
@@ -287,7 +294,12 @@ def main(gmail_service):
     today = datetime.datetime.now()
     start_date = (today - datetime.timedelta(days=LOOK_BACK_DAYS)).strftime("%Y/%m/%d")
     reservations = get_reservations(gmail_service, start_date)
-    reservations.extend(get_wait_list_reservations(gmail_service, start_date))
+    added_to_wait_list = get_added_to_waitlist(gmail_service, start_date)
+    wait_list_instructors_by_time = {e.timestamp: e.instructor for e in added_to_wait_list}
+    reserved_from_wait_list = get_wait_list_reservations(gmail_service, start_date, wait_list_instructors_by_time)
+    reserved_ids = [r.msg_id for r in reserved_from_wait_list]
+    reservations.extend(reserved_from_wait_list)
+    [reservations.append(r) for r in added_to_wait_list if r.msg_id not in reserved_ids]
     cancellations = get_cancellations(gmail_service, start_date)
     cancelled_timestamps = set([e.timestamp for e in cancellations])
     print(

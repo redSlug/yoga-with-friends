@@ -9,10 +9,13 @@ type Event = {
   meridiem: string;
   day_of_week: string;
   date: string;
+  waitlisted: boolean;
 };
 
 
 function App() {
+    console.log("url is ", import.meta.env.VITE_YOGA_DATA_URL)
+
     const [yogaData, setYogaData] = useState<Array<Event>>([]);
     const [loading, setLoading] = useState(true);
 
@@ -26,7 +29,7 @@ function App() {
                 }
                 setYogaData(await response.json());
             } catch(e) {
-                throw new Error(`Somethign went wrong while fetching classes. ${e}`);
+                throw new Error(`Something went wrong while fetching classes. ${e}`);
             } finally {
                 setLoading(false);
             }
@@ -38,12 +41,17 @@ function App() {
         return <p>Loading...</p>;
     }
 
-    const parkSlopeClasses = yogaData.filter((e) => e.location === "Park Slope");
-    const otherClasses = yogaData.filter((e) => e.location !== "Park Slope");
+    const knownLocations = ["Park Slope", "Brooklyn Heights"]
+
+    const parkSlopeClasses = yogaData.filter((e) => e.location === "Park Slope" && !e.waitlisted);
+    const brooklynHeights = yogaData.filter((e) => e.location === "Brooklyn Heights" && !e.waitlisted);
+    const otherClasses = yogaData.filter((e) => !knownLocations.includes(e.location) && !e.waitlisted);
+    const waitlisted = yogaData.filter((e) => e.waitlisted);
+
     return (
     <div className="App">
-        <h1>Enrolled Yoga Classes</h1>
-      <h2>Park Slope</h2>
+        <h1>Yoga Classes</h1>
+      <h2>Park Slope (Enrolled)</h2>
         {parkSlopeClasses.length === 0 ? (<p>couldn't find any</p>) :
             (<ul>
                 {parkSlopeClasses.map((event: Event, index: number) => (
@@ -53,7 +61,28 @@ function App() {
                 ))}
             </ul>)
         }
-        <h2>Other Locations</h2>
+        <h2>Brooklyn Heights (Enrolled)</h2>
+        {brooklynHeights.length === 0 ? (<p>couldn't find any</p>) :
+            (<ul>
+                {brooklynHeights.map((event: Event, index: number) => (
+                    <li key={index}>
+                        {event.time}{event.meridiem} {event.date} - {event.instructor.split(" ")[0]}
+                    </li>
+                ))}
+            </ul>)
+        }
+        <h2>Waitlisted</h2>
+        {waitlisted.length === 0 ? (<p>couldn't find any</p>) :
+            (<ul>
+                {waitlisted.map((event: Event, index: number) => (
+                    <li key={index}>
+                        {event.time}{event.meridiem} {event.date} - {event.instructor.split(" ")[0]}
+                    </li>
+                ))}
+            </ul>)
+        }
+
+        <h2>Other Classes</h2>
         {otherClasses.length === 0 ? (<p>couldn't find any</p>) :
             (<ul>
                 {otherClasses.map((event: Event, index: number) => (

@@ -13,3 +13,4 @@ class Event:
     meridiem: str
     day_of_week: str
     date: str  # February 12
+    waitlisted: bool
