@@ -43,12 +43,12 @@ function main {
     IS_RENDERING=1
     while true; do
         SHOULD_RENDER=1
-        echo "SHOULDRENDER$SHOULD_RENDER"
+        echo "SHOULD_RENDER=$SHOULD_RENDER IS_RENDERING=$IS_RENDERING"
 
         # Set the return value
         should_render_ppm
         SHOULD_RENDER=$?
-        echo "SHOULDRENDER$SHOULD_RENDER"
+        echo "SHOULD_RENDER=$SHOULD_RENDER IS_RENDERING=$IS_RENDERING"
 
         ## if SHOULD_RENDER and NOT IS_RENDERING
         if [ "$SHOULD_RENDER" -eq 0 ] && [ "$IS_RENDERING" -eq 1 ]; then
@@ -57,7 +57,7 @@ function main {
         fi
 
         ## if NOT SHOULD_RENDER and IS_RENDERING
-        if [ "$SHOULD_RENDER" -eq 1 ] && [ "$IS_RENDERING" -eq 0 ]; then
+        if [ "$SHOULD_RENDER" -eq 1 ]; then
           sudo pkill demo
           IS_RENDERING=1
         fi
