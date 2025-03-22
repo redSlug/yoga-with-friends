@@ -9,8 +9,6 @@ LOG_FILE=/home/pi/yoga-with-friends/log
 BANNER_IMAGE_FILE="yoga.ppm"
 POLLING_DELAY=10
 SHOULD_RENDER_FILE="render.txt"
-BASE_URL=https://s3.us-east-2.amazonaws.com/yoga-with-friends.com/
-
 
 function rotate_logs_if_needed {
     log_file_size=$(du -b log | tr -s '\t' ' ' | cut -d' ' -f1)
@@ -47,24 +45,10 @@ function should_render_ppm {
 function main {
     pushd $WORKING_DIR
     while true; do
+        sudo pkill demo
         if should_render_ppm;
         then
-          wget -N $BASE_URL$BANNER_IMAGE_FILE
-          if [ $? -eq 0 ];
-          then
-              log_to_file "wget succeeded"
-              sudo pkill demo
           sudo rpi-rgb-led-matrix/examples-api-use/demo -D 1 yoga.ppm --led-no-hardware-pulse --led-rows=16 --led-cols=32 -m 0 --led-daemon --led-brightness=20
-          else
-              log_to_file "wget failed - file was likely not modified"
-              if [ ! -f $BANNER_IMAGE_FILE ];
-              then
-                  log_to_file "File not found!"
-                  exit 1
-              fi
-          fi
-        else
-          sudo pkill demo
         fi
         rotate_logs_if_needed
         sleep $POLLING_DELAY
