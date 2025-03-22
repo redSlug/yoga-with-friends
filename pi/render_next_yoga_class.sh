@@ -42,7 +42,11 @@ function main {
     pushd $WORKING_DIR
     IS_RENDERING=1
     while true; do
+        SHOULD_RENDER=1
+        echo "SHOULDRENDER$SHOULD_RENDER"
+
         SHOULD_RENDER=${should_render_ppm}
+        echo "SHOULDRENDER$SHOULD_RENDER"
 
         ## if SHOULD_RENDER and NOT IS_RENDERING
         if [ "$SHOULD_RENDER" -eq 0 ] && [ "$IS_RENDERING" -eq 1 ]; then
