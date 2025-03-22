@@ -53,22 +53,17 @@ def create_text_image(
 def save_should_render(file_path, next_event):
     now = datetime.now()
     current_hour = now.hour
-    fourteen_hours = 60 * 14
+    twelve_hours = 60 * 12
     should_render = False
     time_until_next_class = next_event.timestamp - now.timestamp()
-    if time_until_next_class <= fourteen_hours:
+    if time_until_next_class <= twelve_hours:
         should_render = True
     if 21 <= current_hour <= 23 or 6 < current_hour <= 9:
         should_render = True
     with open(file_path, "w") as f:
-        f.write(str(True))
+        f.write(str(should_render))
 
 
-def save_render_true(file_path):
+def set_should_render(file_path: str, should_render: bool):
     with open(file_path, "w") as f:
-        f.write(str(True))
-
-
-def save_render_false(file_path):
-    with open(file_path, "w") as f:
-        f.write(str(True))
+        f.write(str(should_render))

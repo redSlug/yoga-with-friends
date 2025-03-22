@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# crontab -e
-# @reboot /home/pi/yoga-with-friends/pi/render_next_yoga_class.sh
-
 MAX_LOG_FILE_SIZE=250000000
 WORKING_DIR=/home/pi/yoga-with-friends/pi
 LOG_FILE=/home/pi/yoga-with-friends/log

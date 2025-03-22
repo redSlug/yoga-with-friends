@@ -22,12 +22,9 @@ python forever.py
 ```
 
 ## Future Ideas / Enhancements
-* handle "Reservation canceled" by skipping them and removing them from the calendar
-* stop creating redundant calendar events when run multiple times
 * intuit year in get_date
-* persist ics UUIDs in a storage - better yet use the ID from the email (to not create dup 
-  events on calendar)
-* code to handle case where "google Token has been expired or revoked" 
+* use persisted events to reduce the timeframe of the calendar client 
+  query
 
 ## Troubleshooting
 - if you encounter `ModuleNotFoundError: No module named 'google'`, there could a discrepancy
