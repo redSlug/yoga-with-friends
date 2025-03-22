@@ -41,12 +41,22 @@ function should_render_ppm {
 
 function main {
     pushd $WORKING_DIR
+    IS_RENDERING=1
     while true; do
-        sudo pkill demo
-        if should_render_ppm;
-        then
-          sudo rpi-rgb-led-matrix/examples-api-use/demo -D 1 yoga.ppm --led-no-hardware-pulse --led-rows=16 --led-cols=32 -m 0 --led-daemon --led-brightness=20
+        SHOULD_RENDER=${should_render}
+
+        ## if SHOULD_RENDER and NOT IS_RENDERING
+        if $SHOULD_RENDER && [ $IS_RENDERING -eq 1 ]; then
+          sudo rpi-rgb-led-matrix/examples-api-use/demo -D 1 yoga.ppm --led-no-hardware-pulse --led-rows=16 --led-cols=32 -m 0 --led-daemon --led-brightness=10
+          IS_RENDERING=0
         fi
+
+        ## if NOT SHOULD_RENDER and IS_RENDERING
+        if [ $SHOULD_RENDER -eq 1 ] && $IS_RENDERING; then
+          sudo pkill demo
+          IS_RENDERING=1
+        fi
+
         rotate_logs_if_needed
         sleep $POLLING_DELAY
     done
