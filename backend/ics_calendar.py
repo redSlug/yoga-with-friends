@@ -12,7 +12,7 @@ def create_calendar(data, filepath):
         instructor = item["instructor"]
         enrolled_name = f"Yoga in {location} with {instructor}"
         waitlisted_name = f"Waitlisted with {instructor}"
-        is_waitlisted = item['waitlisted'] == True
+        is_waitlisted = item["waitlisted"] == True
 
         event = Event()
         event.name = waitlisted_name if is_waitlisted else enrolled_name

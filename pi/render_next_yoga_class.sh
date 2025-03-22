@@ -1,13 +1,26 @@
 #!/bin/bash
 
 # crontab -e
-# @reboot /home/pi/shader-leds/render.sh
+# @reboot /home/pi/yoga-with-friends/pi/render_next_yoga_class.sh
 
 MAX_LOG_FILE_SIZE=250000000
-WORKING_DIR=/home/pi/shader-leds
-LOG_FILE=/home/pi/shader-leds/log
+WORKING_DIR=/home/pi/yoga-with-friends/pi
+LOG_FILE=/home/pi/yoga-with-friends/log
 BANNER_IMAGE_FILE="yoga.ppm"
-POLLING_DELAY=2m
+POLLING_DELAY=10
+SHOULD_RENDER_FILE="render.txt"
+BASE_URL=https://s3.us-east-2.amazonaws.com/yoga-with-friends.com/
+
+
+function rotate_logs_if_needed {
+    log_file_size=$(du -b log | tr -s '\t' ' ' | cut -d' ' -f1)
+
+    if [ $log_file_size -gt $MAX_LOG_FILE_SIZE ];then
+        log_to_file "Rotating log file of size $log_file_size bytes"
+        mv $LOG_FILE "$LOG_FILE.backup"
+        touch $LOG_FILE
+    fi
+}
 
 
 function log_to_file {
@@ -20,41 +33,63 @@ function cleanup {
     exit
 }
 
-function rotate_logs_if_needed {
-    log_file_size=$(du -b log | tr -s '\t' ' ' | cut -d' ' -f1)
-
-    if [ $log_file_size -gt $MAX_LOG_FILE_SIZE ];then
-        log_to_file "Rotating log file of size $log_file_size bytes"
-        mv $LOG_FILE "$LOG_FILE.backup"
-        touch $LOG_FILE
-    fi
+function should_render_ppm {
+  TEMP_FILE=$(mktemp)
+  curl -s $BASE_URL$SHOULD_RENDER_FILE -o $TEMP_FILE
+  if [ $? -ne 0 ]; then
+      echo "Error: Failed to fetch the file"
+      exit 1
+  fi
+  if grep -q "True" "$TEMP_FILE"; then
+      should_render=0
+  else
+      should_render=1
+  fi
+  rm -f "$TEMP_FILE"
+  echo "should_render = $should_render"
+  return $should_render
 }
+
 
 function main {
     pushd $WORKING_DIR
-
     while true; do
-        wget -N https://s3.us-east-2.amazonaws.com/yoga-with-friends.com/$BANNER_IMAGE_FILE
-        if [ $? -eq 0 ];
+        if should_render_ppm;
         then
-            log_to_file "wget succeeded"
-            sudo pkill demo
-            sudo rpi-rgb-led-matrix/examples-api-use/demo -D 1 yoga.ppm --led-no-hardware-pulse --led-rows=16 --led-cols=32 -m 0 --led-daemon --led-brightness=50
+          wget -N $BASE_URL$BANNER_IMAGE_FILE
+          if [ $? -eq 0 ];
+          then
+              log_to_file "wget succeeded"
+              sudo pkill demo
+          # TODO: move rendering repo into this repo as subrepo and build
+          RENDER_PATH=/home/pi/weather-reporter/pi
+          pushd $RENDER_PATH
+          echo "working dir"
+          echo pwd
+          sudo rpi-rgb-led-matrix/examples-api-use/demo -D 1 yoga.ppm --led-no-hardware-pulse --led-rows=16 --led-cols=32 -m 0 --led-daemon --led-brightness=20
+          popd
+          else
+              log_to_file "wget failed - file was likely not modified"
+              if [ ! -f $BANNER_IMAGE_FILE ];
+              then
+                  log_to_file "File not found!"
+                  exit 1
+              fi
+          fi
         else
-            log_to_file "wget failed - file was likely not modified"
-
-            if [ ! -f $BANNER_IMAGE_FILE ]; then
-                log_to_file "File not found!"
-                exit 1
-            fi
+          sudo pkill demo
         fi
-
         rotate_logs_if_needed
         sleep $POLLING_DELAY
     done
-
     popd
 }
 
 trap cleanup EXIT
 main
+
+
+RENDER_PATH=/home/pi/weather-reporter/pi
+pushd $RENDER_PATH
+sudo rpi-rgb-led-matrix/examples-api-use/demo -D 1 yoga.ppm --led-no-hardware-pulse --led-rows=16 --led-cols=32 -m 0 --led-daemon --led-brightness=20
+popd

@@ -1,4 +1,4 @@
-from fonts import binary_font
+from ppm.fonts import binary_font
 
 
 def _draw_character(image, char_offset, char_data):

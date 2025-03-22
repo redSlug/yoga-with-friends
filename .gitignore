@@ -6,3 +6,9 @@ credentials.json
 __pycache__
 *.ppm
 .DS_Store
+
+render.txt
+yoga.ics
+yoga.json
+pi/log
+should_show_yoga_ppm.txt

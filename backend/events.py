@@ -9,7 +9,7 @@ from typing import List
 from data_types.all import Event
 from email_client import get_service
 from ics_calendar import create_calendar
-from ppm_generator import create_image_file
+from ppm.class_time import create_image_file
 from publisher import upload_to_s3
 from utils.get_date import (
     get_timestamp,
@@ -33,7 +33,21 @@ def get_assets_file_path(file_name):
 
 
 def save_ppm_file(text):
-    create_image_file(text, get_public_file_path("yoga.ppm"))
+    create_image_file(text, "yoga.ppm")
+
+
+def save_should_render_ppm(file_name, next_event):
+    now = datetime.datetime.now()
+    current_hour = now.hour
+    fourteen_hours = 60 * 14
+    should_render = False
+    time_until_next_class = next_event.timestamp - now.timestamp()
+    if time_until_next_class <= fourteen_hours:
+        should_render = True
+    if 21 <= current_hour <= 23 or 6 < current_hour <= 9:
+        should_render = True
+    with open(file_name, "w") as f:
+        f.write(str(should_render))
 
 
 def get_events_json(events: List[Event]) -> str:
@@ -41,7 +55,7 @@ def get_events_json(events: List[Event]) -> str:
 
 
 def save_events_for_frontend(events: List[Event]):
-    static_file_path = get_public_file_path("yoga.json")
+    static_file_path = "yoga.json"
     with open(static_file_path, "w") as f:
         f.write(get_events_json(events))
     print(f"wrote json to file: ", static_file_path)
@@ -89,7 +103,7 @@ def get_added_to_waitlist(service, start_date_str):
     # <p>For now, you have been added to the waitlist for Some Like it Hot with Jeremy Good at
     # 9:00 AM on Monday, March 31.</p>
     pattern = (
-       r"with ([a-zA-Z ]+) at (\d+:\d+) (AM|PM) on ([\D+]+?), ([a-zA-Z0-9 ]+).</p>"
+        r"with ([a-zA-Z ]+) at (\d+:\d+) (AM|PM) on ([\D+]+?), ([a-zA-Z0-9 ]+).</p>"
     )
 
     for msg in messages:
@@ -166,7 +180,7 @@ def get_wait_list_reservations(service, start_date_str, instructors):
         day = match.group(5)
         location = maybe_strip(match.group(6).split("-")[0])
         timestamp = get_wait_list_timestamp(time, meridiem, month, day)
-        instructor = instructors[timestamp] if timestamp in instructors else ''
+        instructor = instructors[timestamp] if timestamp in instructors else ""
         calendar_events.append(
             Event(
                 msg_id=msg_id,
@@ -189,6 +203,7 @@ def maybe_strip(s):
         return s.strip()
     except s:
         return ""
+
 
 def get_reservations(service, start_date_str):
     print("gathering reservations")
@@ -295,12 +310,20 @@ def main(gmail_service):
     start_date = (today - datetime.timedelta(days=LOOK_BACK_DAYS)).strftime("%Y/%m/%d")
     reservations = get_reservations(gmail_service, start_date)
     added_to_wait_list = get_added_to_waitlist(gmail_service, start_date)
-    wait_list_instructors_by_time = {e.timestamp: e.instructor for e in added_to_wait_list}
-    reserved_from_wait_list = get_wait_list_reservations(gmail_service, start_date, wait_list_instructors_by_time)
+    wait_list_instructors_by_time = {
+        e.timestamp: e.instructor for e in added_to_wait_list
+    }
+    reserved_from_wait_list = get_wait_list_reservations(
+        gmail_service, start_date, wait_list_instructors_by_time
+    )
     reserved_timestamps = [r.timestamp for r in reserved_from_wait_list]
     reservations.extend(reserved_from_wait_list)
     # NOTE: bug here if multiple reservations with same timestamp at different locations
-    [reservations.append(r) for r in added_to_wait_list if r.timestamp not in reserved_timestamps]
+    [
+        reservations.append(r)
+        for r in added_to_wait_list
+        if r.timestamp not in reserved_timestamps
+    ]
     cancellations = get_cancellations(gmail_service, start_date)
     cancelled_timestamps = set([e.timestamp for e in cancellations])
     print(
@@ -319,14 +342,17 @@ def main(gmail_service):
     if len(future_reservations) > 0:
         next_event = future_reservations[0]
         save_ppm_file(next_event.time + next_event.meridiem)
+        save_should_render_ppm("render.txt", next_event)
         save_events_for_frontend(future_reservations)
         create_calendar(
             json.loads(get_events_json(future_reservations)),
-            get_public_file_path("yoga.ics"),
+            "yoga.ics",
         )
-        upload_to_s3(get_public_file_path('yoga.ics'), 'yoga.ics')
-        upload_to_s3(get_public_file_path("yoga.ppm"), 'yoga.ppm')
-        upload_to_s3(get_public_file_path("yoga.json"), 'yoga.json')
+        upload_to_s3("yoga.ics", "yoga.ics")
+        upload_to_s3("yoga.ppm", "yoga.ppm")
+        upload_to_s3("yoga.json", "yoga.json")
+        upload_to_s3("render.txt", "render.txt")
+
     return gmail_service
 
 
