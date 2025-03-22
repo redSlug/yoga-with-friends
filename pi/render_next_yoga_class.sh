@@ -45,7 +45,9 @@ function main {
         SHOULD_RENDER=1
         echo "SHOULDRENDER$SHOULD_RENDER"
 
-        SHOULD_RENDER=${should_render_ppm}
+        # Set the return value
+        should_render_ppm
+        SHOULD_RENDER=$?
         echo "SHOULDRENDER$SHOULD_RENDER"
 
         ## if SHOULD_RENDER and NOT IS_RENDERING
