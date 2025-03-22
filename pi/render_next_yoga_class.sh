@@ -46,13 +46,13 @@ function main {
         SHOULD_RENDER=${should_render}
 
         ## if SHOULD_RENDER and NOT IS_RENDERING
-        if $SHOULD_RENDER && [ $IS_RENDERING -eq 1 ]; then
+        if [ $SHOULD_RENDER -eq 0 ] && [ $IS_RENDERING -eq 1 ]; then
           sudo rpi-rgb-led-matrix/examples-api-use/demo -D 1 yoga.ppm --led-no-hardware-pulse --led-rows=16 --led-cols=32 -m 0 --led-daemon --led-brightness=10
           IS_RENDERING=0
         fi
 
         ## if NOT SHOULD_RENDER and IS_RENDERING
-        if [ $SHOULD_RENDER -eq 1 ] && $IS_RENDERING; then
+        if [ $SHOULD_RENDER -eq 1 ] && [ $IS_RENDERING -eq 0]; then
           sudo pkill demo
           IS_RENDERING=1
         fi
