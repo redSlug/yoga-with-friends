@@ -164,7 +164,7 @@ def get_wait_list_reservations(service, start_date_str, instructors):
         day_of_week = match.group(3)
         month = match.group(4)
         day = match.group(5)
-        location = match.group(6).split("-")[0]
+        location = maybe_strip(match.group(6).split("-")[0])
         timestamp = get_wait_list_timestamp(time, meridiem, month, day)
         instructor = instructors[timestamp] if timestamp in instructors else ''
         calendar_events.append(
@@ -297,9 +297,10 @@ def main(gmail_service):
     added_to_wait_list = get_added_to_waitlist(gmail_service, start_date)
     wait_list_instructors_by_time = {e.timestamp: e.instructor for e in added_to_wait_list}
     reserved_from_wait_list = get_wait_list_reservations(gmail_service, start_date, wait_list_instructors_by_time)
-    reserved_ids = [r.msg_id for r in reserved_from_wait_list]
+    reserved_timestamps = [r.timestamp for r in reserved_from_wait_list]
     reservations.extend(reserved_from_wait_list)
-    [reservations.append(r) for r in added_to_wait_list if r.msg_id not in reserved_ids]
+    # NOTE: bug here if multiple reservations with same timestamp at different locations
+    [reservations.append(r) for r in added_to_wait_list if r.timestamp not in reserved_timestamps]
     cancellations = get_cancellations(gmail_service, start_date)
     cancelled_timestamps = set([e.timestamp for e in cancellations])
     print(
