@@ -58,6 +58,7 @@ function main {
 
         ## if NOT SHOULD_RENDER and IS_RENDERING
         if [ "$SHOULD_RENDER" -eq 1 ]; then
+          echo "killing it"
           sudo pkill demo
           IS_RENDERING=1
         fi
