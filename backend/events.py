@@ -3,27 +3,29 @@ import datetime
 import json
 import os
 import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
+from api.email_client import get_service
 from data_types.all import Event
-from email_client import get_service
-from ics_calendar import create_calendar
-from ppm_generator import create_image_file
-from publisher import upload_to_s3
-from utils.get_date import (
+from api.calendar_client import publish
+from ppm.image import create_text_image, save_should_render, save_render_true
+
+from s3.publisher import upload_file_to_s3
+from utils.all import (
     get_timestamp,
     get_cancellation_timestamp,
-    get_wait_list_timestamp,
+    get_waitlist_timestamp,
+    get_events_json,
+    maybe_strip,
 )
 
 LOOK_BACK_DAYS = 30
 
 
-def get_public_file_path(file_name):
-    return os.path.abspath(
-        Path(Path.cwd().parent.joinpath("frontend", "public", file_name))
-    )
+def get_pi_path(file_name):
+    return os.path.abspath(Path(Path.cwd().parent.joinpath("pi", file_name)))
 
 
 def get_assets_file_path(file_name):
@@ -32,19 +34,10 @@ def get_assets_file_path(file_name):
     )
 
 
-def save_ppm_file(text):
-    create_image_file(text, get_public_file_path("yoga.ppm"))
-
-
-def get_events_json(events: List[Event]) -> str:
-    return json.dumps([event.__dict__ for event in events])
-
-
-def save_events_for_frontend(events: List[Event]):
-    static_file_path = get_public_file_path("yoga.json")
-    with open(static_file_path, "w") as f:
+def save_events(file_path: str, events: List[Event]):
+    with open(file_path, "w") as f:
         f.write(get_events_json(events))
-    print(f"wrote json to file: ", static_file_path)
+    print(f"wrote json to file: ", file_path)
 
 
 def search_messages(service, query):
@@ -89,7 +82,7 @@ def get_added_to_waitlist(service, start_date_str):
     # <p>For now, you have been added to the waitlist for Some Like it Hot with Jeremy Good at
     # 9:00 AM on Monday, March 31.</p>
     pattern = (
-       r"with ([a-zA-Z ]+) at (\d+:\d+) (AM|PM) on ([\D+]+?), ([a-zA-Z0-9 ]+).</p>"
+        r"with ([a-zA-Z ]+) at (\d+:\d+) (AM|PM) on ([\D+]+?), ([a-zA-Z0-9 ]+).</p>"
     )
 
     for msg in messages:
@@ -127,7 +120,7 @@ def get_added_to_waitlist(service, start_date_str):
     return calendar_events
 
 
-def get_wait_list_reservations(service, start_date_str, instructors):
+def get_waitlist_reservations(service, start_date_str, instructors):
     print("gathering wait list reservations")
     query = f'from:info@heatwise-studio.com subject:"Heatwise waitlist update: You got a spot!" after:{start_date_str}'
     messages = search_messages(service, query)
@@ -165,8 +158,8 @@ def get_wait_list_reservations(service, start_date_str, instructors):
         month = match.group(4)
         day = match.group(5)
         location = maybe_strip(match.group(6).split("-")[0])
-        timestamp = get_wait_list_timestamp(time, meridiem, month, day)
-        instructor = instructors[timestamp] if timestamp in instructors else ''
+        timestamp = get_waitlist_timestamp(time, meridiem, month, day)
+        instructor = instructors[timestamp] if timestamp in instructors else ""
         calendar_events.append(
             Event(
                 msg_id=msg_id,
@@ -183,12 +176,6 @@ def get_wait_list_reservations(service, start_date_str, instructors):
         )
     return calendar_events
 
-
-def maybe_strip(s):
-    try:
-        return s.strip()
-    except s:
-        return ""
 
 def get_reservations(service, start_date_str):
     print("gathering reservations")
@@ -290,46 +277,79 @@ def get_cancellations(service, start_date_str):
     return cancellation_events
 
 
+def publish_reservations_for_frontend(file_path: str, events: List[Event]):
+    with open(file_path, "w") as f:
+        f.write(get_events_json(events))
+    upload_file_to_s3(file_path)
+
+
+@dataclass
+class ResultsCounts:
+    reservations: int
+    added_to_waitlist: int
+    waitlist_instructors: int
+    reserved_from_waitlist: int
+    reserved_timestamps: Optional[int] = None
+    all_reservations: Optional[int] = None
+    cancellations: Optional[int] = None
+    cancelled_timestamps: Optional[int] = None
+    all_reservations_minus_cancellations: Optional[int] = None
+    future_reservations: Optional[int] = None
+
+
 def main(gmail_service):
     today = datetime.datetime.now()
     start_date = (today - datetime.timedelta(days=LOOK_BACK_DAYS)).strftime("%Y/%m/%d")
     reservations = get_reservations(gmail_service, start_date)
-    added_to_wait_list = get_added_to_waitlist(gmail_service, start_date)
-    wait_list_instructors_by_time = {e.timestamp: e.instructor for e in added_to_wait_list}
-    reserved_from_wait_list = get_wait_list_reservations(gmail_service, start_date, wait_list_instructors_by_time)
-    reserved_timestamps = [r.timestamp for r in reserved_from_wait_list]
-    reservations.extend(reserved_from_wait_list)
-    # NOTE: bug here if multiple reservations with same timestamp at different locations
-    [reservations.append(r) for r in added_to_wait_list if r.timestamp not in reserved_timestamps]
-    cancellations = get_cancellations(gmail_service, start_date)
-    cancelled_timestamps = set([e.timestamp for e in cancellations])
-    print(
-        f"reservations count={len(reservations)}, cancelled timestamps=",
-        cancelled_timestamps,
+    added_to_waitlist = get_added_to_waitlist(gmail_service, start_date)
+    waitlist_instructors_by_time = {
+        e.timestamp: e.instructor for e in added_to_waitlist
+    }
+    reserved_from_waitlist = get_waitlist_reservations(
+        gmail_service, start_date, waitlist_instructors_by_time
     )
-
+    reserved_timestamps = [r.timestamp for r in reserved_from_waitlist]
+    results = ResultsCounts(
+        reservations=len(reservations),
+        added_to_waitlist=len(added_to_waitlist),
+        waitlist_instructors=len(waitlist_instructors_by_time),
+        reserved_from_waitlist=len(reserved_from_waitlist),
+        reserved_timestamps=len(reserved_timestamps),
+    )
+    reservations.extend(reserved_from_waitlist)
+    # NOTE: bug here if multiple reservations with same timestamp at different locations
+    [
+        reservations.append(r)
+        for r in added_to_waitlist
+        if r.timestamp not in reserved_timestamps
+    ]
+    results.all_reservations = len(reservations)
+    cancellations = get_cancellations(gmail_service, start_date)
+    results.cancellations = len(cancellations)
+    cancelled_timestamps = set([e.timestamp for e in cancellations])
+    results.cancelled_timestamps = len(cancelled_timestamps)
     # TODO: handle case where person cancels then re-registers; look at email sent time
     reservations = [r for r in reservations if r.timestamp not in cancelled_timestamps]
-    print(f"reservations count after cancellations={ len(reservations)}")
+    results.all_reservations_minus_cancellations = len(reservations)
     future_reservations = [e for e in reservations if e.timestamp > today.timestamp()]
     future_reservations.sort(key=lambda e: e.timestamp)
+    results.future_reservations = len(future_reservations)
 
-    print(f"future_reservations count={len(future_reservations)}")
+    print("results", json.dumps(results.__dict__, indent=4))
 
-    if len(future_reservations) > 0:
-        next_event = future_reservations[0]
-        save_ppm_file(next_event.time + next_event.meridiem)
-        save_events_for_frontend(future_reservations)
-        create_calendar(
-            json.loads(get_events_json(future_reservations)),
-            get_public_file_path("yoga.ics"),
-        )
-        upload_to_s3(get_public_file_path('yoga.ics'), 'yoga.ics')
-        upload_to_s3(get_public_file_path("yoga.ppm"), 'yoga.ppm')
-        upload_to_s3(get_public_file_path("yoga.json"), 'yoga.json')
+    if len(future_reservations) == 0:
+        print("no future events found")
+
+    next_event = future_reservations[0]
+    ppm_text = next_event.time + next_event.meridiem
+    create_text_image(get_pi_path("yoga.ppm"), ppm_text)
+    save_should_render(get_pi_path("render.txt"), next_event)
+    publish("yoga.ics", future_reservations)
+    publish_reservations_for_frontend("yoga.json", future_reservations)
     return gmail_service
 
 
 if __name__ == "__main__":
     events = main(get_service())
+    # save_render_true("render.txt")
     print("Done.")

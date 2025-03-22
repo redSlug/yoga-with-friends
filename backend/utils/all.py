@@ -1,4 +1,6 @@
 import datetime
+import json
+from typing import List
 
 from data_types.all import Event
 
@@ -38,7 +40,7 @@ def get_timestamp(time_str, meridiem, date_str) -> int:
     return int(_get_date(time_str, meridiem, date_str).timestamp())
 
 
-def get_wait_list_timestamp(time_str, meridiem, month, day) -> int:
+def get_waitlist_timestamp(time_str, meridiem, month, day) -> int:
     date_str = f"{month} {day}"
     return int(_get_date(time_str, meridiem, date_str).timestamp())
 
@@ -51,3 +53,14 @@ def get_cancellation_timestamp(date, time_str, meridiem):
 
 def convert_to_datetime(event: Event) -> datetime:
     return _get_date(event.time, event.meridiem, event.date)
+
+
+def get_events_json(events: List[Event]) -> str:
+    return json.dumps([event.__dict__ for event in events])
+
+
+def maybe_strip(s):
+    try:
+        return s.strip()
+    except s:
+        return ""

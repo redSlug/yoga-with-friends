@@ -1,6 +1,6 @@
 from time import sleep
 
-from email_client import get_service
+from client import get_service
 from events import main
 
 
