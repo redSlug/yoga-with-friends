@@ -1,3 +1,4 @@
+import argparse
 import base64
 import datetime
 import json
@@ -10,7 +11,7 @@ from typing import List, Optional
 from api.email_client import get_service
 from data_types.all import Event
 from api.calendar_client import publish
-from ppm.image import create_text_image, save_should_render, save_render_true
+from ppm.image import create_text_image, save_should_render, save_render_true, save_render_false
 
 from s3.publisher import upload_file_to_s3
 from utils.all import (
@@ -350,6 +351,15 @@ def main(gmail_service):
 
 
 if __name__ == "__main__":
-    events = main(get_service())
-    # save_render_true("render.txt")
+    parser = argparse.ArgumentParser(description="Yoga with Friends")
+    parser.add_argument("--force_render", type=str, help="Force LEDs, enter YES or NO")
+    args = parser.parse_args()
+
+    if args.force_render == "YES":
+        save_render_true("render.txt")
+    elif args.force_render == "NO":
+        save_render_false("render.txt")
+    else:
+        events = main(get_service())
+
     print("Done.")
