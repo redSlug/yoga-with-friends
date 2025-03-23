@@ -1,6 +1,5 @@
 # yoga-with-friends - frontend
-Simple user-facing website that renders the yoga enrollments retrieved from a bucket. Uses [vite]
-(https://vite.dev/) and has hot reloading.
+Simple user-facing website that renders the yoga enrollments retrieved from a bucket. Uses [vite](https://vite.dev/) and has hot reloading.
 
 ## Setup
 ### Configure Automatic Deploys
@@ -11,22 +10,4 @@ Simple user-facing website that renders the yoga enrollments retrieved from a bu
 - make sure ``VITE_YOGA_DATA_URL` has the right bucket location in [deploy.yaml](../.github/workflows/deploy.yaml)
 
 ### Troubleshooting / Security
-- make sure the CORS policy on the `yoga.json` resource allows access from the frontend, for example:
-```json
-[
-    {
-        "AllowedHeaders": [
-            "*"
-        ],
-        "AllowedMethods": [
-            "GET"
-        ],
-        "AllowedOrigins": [
-            "http://localhost:5173",
-            "https://yourdomain.com",
-            "https://redslug.github.io"
-        ],
-        "ExposeHeaders": []
-    }
-]
-```
+Setup [some policies](../s3) for your bucket and [publisher](../s3/publisher_iam_permission_policy.json), and add an [index](../s3/index.html) file to your bucket

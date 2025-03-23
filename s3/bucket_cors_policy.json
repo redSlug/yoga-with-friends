@@ -1,0 +1,16 @@
+[
+  {
+    "AllowedHeaders": [
+      "*"
+    ],
+    "AllowedMethods": [
+      "GET"
+    ],
+    "AllowedOrigins": [
+      "http://localhost:5173",
+      "https://yourdomain.com",
+      "https://redslug.github.io"
+    ],
+    "ExposeHeaders": []
+  }
+]

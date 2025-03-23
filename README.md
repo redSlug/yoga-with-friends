@@ -1,8 +1,8 @@
 # yoga-with-friends
 
-Created in order facilitate friends attending yoga classes together, this repo shares up-to-date 
-class information three ways:
-1) [user facing website](https://redslug.github.io/yoga-with-friends/), 
+Created to help friends attend yoga classes together, this app shares up-to-date 
+enrollment information three ways:
+1) [user facing website](https://redslug.github.io/yoga-with-friends/) 
 2) calendar URL to subscribe to
 3) [LED display that shows the time of the next class](images/led_grid.png) near bedtime within twelve hours of class, in a [3d printed case](https://www.tinkercad.com/things/8KHh1wXYdHa-16x32-rgb-led-matrix-panel-case)
 
