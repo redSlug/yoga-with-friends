@@ -54,12 +54,11 @@ def save_should_render(file_path, next_event):
     now = datetime.now()
     current_hour = now.hour
     twelve_hours = 60 * 12
-    should_render = False
     time_until_next_class = next_event.timestamp - now.timestamp()
-    if time_until_next_class <= twelve_hours:
-        should_render = True
-    if 21 <= current_hour <= 23 or 6 < current_hour <= 9:
-        should_render = True
+    class_is_happening_soon = time_until_next_class <= twelve_hours
+    it_is_close_to_bedtime = 21 <= current_hour <= 23 or 6 < current_hour <= 9
+    should_render = class_is_happening_soon and it_is_close_to_bedtime
+    print(f"should render={should_render}")
     with open(file_path, "w") as f:
         f.write(str(should_render))
 
