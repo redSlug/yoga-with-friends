@@ -2,6 +2,8 @@ from datetime import datetime
 
 from ppm.fonts import binary_font
 
+LOOK_BACK_SECONDS = 60 * 60 * 12
+
 
 def _draw_character(image, char_offset, char_data):
     char_width = 5
@@ -52,17 +54,13 @@ def create_text_image(
 
 def save_should_render(file_path, next_event):
     now = datetime.now()
-    current_hour = now.hour
-    twelve_hours = 60 * 12
+    twelve_hours = LOOK_BACK_SECONDS
     time_until_next_class = next_event.timestamp - now.timestamp()
-    class_is_happening_soon = time_until_next_class <= twelve_hours
-    it_is_close_to_bedtime = 21 <= current_hour <= 23 or 6 < current_hour <= 9
-    should_render = class_is_happening_soon and it_is_close_to_bedtime
-    print(f"should render={should_render}")
-    with open(file_path, "w") as f:
-        f.write(str(should_render))
+    should_render = time_until_next_class <= twelve_hours
+    set_should_render(file_path, should_render)
 
 
 def set_should_render(file_path: str, should_render: bool):
+    print(f"should render={should_render}")
     with open(file_path, "w") as f:
         f.write(str(should_render))
