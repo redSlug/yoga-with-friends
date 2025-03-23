@@ -11,7 +11,7 @@ make -C rpi-rgb-led-matrix/examples-api-use
 ```
 
 ### Install Cron
-[Setup backend](../backend/README.md) before running the `publish_yoga_events.sh ` cron
+[Setup backend](../backend/README.md) before adding the `publish_yoga_events.sh ` cron job
 ```bash
 crontab -e
 @reboot /home/pi/yoga-with-friends/pi/render_next_yoga_class.sh
