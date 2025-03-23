@@ -11,7 +11,7 @@ from typing import List, Optional
 from api.email_client import get_service
 from data_types.all import Event
 from api.calendar_client import publish
-from ppm.image import create_text_image, save_should_render, set_should_render
+from ppm.image import create_text_image, save_should_render, set_should_render, COLORS
 
 from s3.publisher import upload_file_to_s3
 from utils.all import (
@@ -343,7 +343,11 @@ def main(gmail_service):
 
     next_event = future_reservations[0]
     ppm_text = next_event.time + next_event.meridiem
-    create_text_image(get_pi_path("yoga.ppm"), ppm_text)
+    create_text_image(
+        get_pi_path("yoga.ppm"),
+        ppm_text,
+        COLORS.PURPLE if next_event.waitlisted else COLORS.GREEN,
+    )
     save_should_render(get_pi_path("render.txt"), next_event)
     publish("yoga.ics", future_reservations)
     publish_reservations_for_frontend("yoga.json", future_reservations)

@@ -1,11 +1,19 @@
 from datetime import datetime
 
 from ppm.fonts import binary_font
+from enum import Enum
 
 LOOK_BACK_SECONDS = 60 * 60 * 12
+LED_DISPLAY_WIDTH = 32
+LED_DISPLAY_HEIGHT = 16
 
 
-def _draw_character(image, char_offset, char_data):
+class COLORS(Enum):
+    PURPLE = (160, 32, 240)
+    GREEN = (0, 255, 0)
+
+
+def _draw_character(image, char_offset, char_data, color):
     char_width = 5
     char_height = 7
     width = len(image[0])
@@ -21,18 +29,15 @@ def _draw_character(image, char_offset, char_data):
                 img_x = skip_x + col_index
                 img_y = row_index + top_margin
                 if 0 <= img_x < width and 0 <= img_y < height:
-                    image[img_y][img_x] = (255, 0, 0)  # red pixel
+                    image[img_y][img_x] = color.value
                 else:
                     raise Exception("Pixel {} out of bounds".format(row_index))
-
-
-LED_DISPLAY_WIDTH = 32
-LED_DISPLAY_HEIGHT = 16
 
 
 def create_text_image(
     filepath,
     text,
+    text_color,
 ):
     image = [
         [(0, 0, 0) for _ in range(LED_DISPLAY_WIDTH)] for _ in range(LED_DISPLAY_HEIGHT)
@@ -42,7 +47,7 @@ def create_text_image(
         if char.upper() not in binary_font:
             raise Exception(f"Unknown character {char}")
         char_data = binary_font[char.upper()]
-        _draw_character(image, char_offset, char_data)
+        _draw_character(image, char_offset, char_data, text_color)
     with open(filepath, "wb") as f:
         # PPM header
         f.write(b"P6\n32 16\n255\n")
