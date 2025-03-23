@@ -364,5 +364,4 @@ if __name__ == "__main__":
         set_should_render(get_pi_path("render.txt"), False)
     else:
         events = main(get_service())
-
     print("Done.")

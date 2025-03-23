@@ -1,17 +1,23 @@
 # yoga-with-friends
 
-A tool to get friends to attend yoga together. Exports yoga events to a hosted ICS calendar for your friends to subscribe to, a front end to show classes, and a PPM file to render the next class to an [LED grid](https://www.adafruit.com/product/420)
+Created in order facilitate friends attending yoga classes together, this repo shares up-to-date 
+class information three ways:
+1) [user facing website](https://redslug.github.io/yoga-with-friends/), 
+2) calendar URL to subscribe to
+3) [LED display that shows the time of the next class](images/led_grid.png) near bedtime within twelve hours of class, in a [3d printed case](https://www.tinkercad.com/things/8KHh1wXYdHa-16x32-rgb-led-matrix-panel-case)
 
-[Check it out!](https://redslug.github.io/yoga-with-friends/)
+Check out documentation for the [pi](pi/README.md), [backend](backend/README.md), [frontend](frontend/README.md) 
+and [deploying](DEPLOY.md).
 
-[Related infrastructure code](https://github.com/recursecenter/cluster-config/pull/94)
-
-![led_grid.png](images/led_grid.png)
-
-![front_end.png](front_end.png)
+## Architecture Diagram
+![architecture diagram](https://lucid.app/publicSegments/view/77710a04-6480-4144-8c24-c2ac63166583/image.png)
 
 ## Develop
+Develop locally or using docker by [populating credentials](backend/README.md) and running:
 ```bash
 docker buildx build -f Dockerfile -t bdettmer/yoga-with-friends .
-docker run -it yoga-with-friends /bin/sh
+docker run -it \
+  -v $(pwd)/backend/token.json:/yoga-with-friends/backend/token.json \
+  -v $(pwd)/backend/.env:/yoga-with-friends/backend/.env \
+  bdettmer/yoga-with-friends /bin/sh
 ```

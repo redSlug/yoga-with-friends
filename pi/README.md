@@ -1,6 +1,6 @@
-# yoga-with-friends raspberry pi 
-
-Uses content persisted by [events.py](../backend/events.py) to render onto an LED grid
+# yoga-with-friends - pi
+Uses content persisted by [backend](../backend/events.py) to render the time of the next 
+yoga class onto an LED grid shortly before class starts.
 
 ## Setup
 ### Install Submodule
@@ -25,6 +25,7 @@ crontab -e
 - 16+ GB SD card, and card reader / writer
 - [32x16 LED matrix](https://www.adafruit.com/product/420) with ribbon and 5 Volt 2 Amp power 
   supply (or solder to a 3 AMP raspberry pi power supply at your own risk)
+- (Optional) 3d print this [case for the display + pi](https://www.tinkercad.com/things/8KHh1wXYdHa-16x32-rgb-led-matrix-panel-case)
 
 ## Debugging
 Can turn rendering on the pi on and off using 
