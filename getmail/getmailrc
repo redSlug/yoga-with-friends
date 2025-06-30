@@ -1,0 +1,16 @@
+[retriever]
+type = SimplePOP3SSLRetriever
+server = pop.gmail.com
+username = REDACTED
+password = GARBAGE
+port = 995
+
+[destination]
+type = Maildir
+path = mailbox/
+
+[options]
+verbose = 2
+message_log = mailbox/mail.log
+delete = false
+read_all = false

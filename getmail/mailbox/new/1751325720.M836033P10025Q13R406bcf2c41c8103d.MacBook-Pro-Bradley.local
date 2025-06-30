@@ -1,0 +1,495 @@
+Return-Path: <bdettmer+caf_=recursivelybrad=gmail.com@gmail.com>
+Delivered-To: unknown
+Received: from pop.gmail.com ([2607:f8b0:4004:c19::6d]:995) by
+  MacBook-Pro-Bradley.local with POP3-SSL getmail6
+  msgid:GmailId197c2471fcc83215; 30 Jun 2025 23:22:00 -0000
+Delivered-To: recursivelybrad@gmail.com
+Received: by 2002:a05:612c:310:b0:4d9:2a1f:1677 with SMTP id
+ hw16csp3197181vqb;
+        Mon, 30 Jun 2025 12:18:50 -0700 (PDT)
+X-Forwarded-Encrypted: i=4;
+ AJvYcCXRoBajOmArYArmZm12Dn1kDzRq/tiQR910ovjEaepbIz1NBKgrOVmM6RfR/PxMqq9jYibLXgp1tzrpSXGwlmc=@gmail.com
+X-Received: by 2002:a05:6402:2801:b0:609:d685:e831 with SMTP id
+ 4fb4d7f45d1cf-60c88b1fbacmr12552993a12.12.1751311130354;
+        Mon, 30 Jun 2025 12:18:50 -0700 (PDT)
+ARC-Seal: i=3; a=rsa-sha256; t=1751311130; cv=pass;
+        d=google.com; s=arc-20240605;
+        b=OgpQtYf9ELi14zmYA49VCzU9CQ5q00ZLDDdxZgDy4EWsPD+mlzx84BNe618pNNRypi
+         N8YQOeCh1VKwqoMeNJl3AJ6WTruOQY0Ufb3FjhzLQnl2hLEzSeJRXY2pw6niNSK+hxsv
+         yiZ2il8bs5s63wgjNki4AZAL6iIAxrF3rmoZ4F33LOJLZKSLAWaVxiD6Po701aTZu3Gi
+         s+RYhnrSitGy/ctI6Q07DKWnSmRbbC3wVWOfdZujyuEts+RZyiXSmP4VVJlDc9yehTlJ
+         4xHylMhIuXu3A+cKgHOI1gAGpRxvI9hPDodLl1YuLaX/QNyNOH79A1be0IBjhv0M01cy
+         BC5Q==
+ARC-Message-Signature: i=3; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=list-unsubscribe-post:list-unsubscribe:to:reply-to:subject
+         :message-id:mime-version:from:date:content-transfer-encoding
+         :dkim-signature:dkim-signature:delivered-to;
+        bh=x7WXbu6P1ja6kQhmJKa8552fw0Dy1Lk89KjicKefsOA=;
+        fh=gFCTvJSMwXyphSiNKMltgizLepYp+hFwfwJlga3MtQ0=;
+        b=RAoDgANIeMilKU+6vNA8KP7DJPFr2OhqhJCDSXLML96LcdJUrUEYS4gWVz6D39iMVM
+         aYP2Pim5/3+HUCRexmdmmi5DeBigHF/kKofO+++D390FGCGXDE1AkBnyb6NvCNgynXCp
+         0uG8SCLgHDaldQhzk0Rn3fEA31IHwkK33b1OAnWutvx23bblkIzIdsQlRNgcoftVNigg
+         Q0XHpUbwjutzUcVptmFEf+zU3I9Aea72CUE7mwusSRmSpNPbOCreuG/mfhjHX3B4pCsQ
+         OiZSti6x5qYv6ESb4Vt6omE/ej6sB4QNiz+r2yn26PBmhYLRh+29LzzCVf0Uqw3vXXx7
+         gs4Q==;
+        dara=google.com
+ARC-Authentication-Results: i=3; mx.google.com;
+       dkim=pass header.i=@brndbot.com header.s=s1 header.b=wZhzA4bk;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=Odc6C157;
+       arc=pass (i=2 spf=pass spfdomain=sg.brndbot.com dkim=pass
+ dkdomain=brndbot.com dkim=pass dkdomain=sendgrid.info);
+       spf=pass (google.com: domain of
+ bdettmer+caf_=recursivelybrad=gmail.com@gmail.com designates 209.85.220.41 as
+ permitted sender)
+ smtp.mailfrom="bdettmer+caf_=recursivelybrad=gmail.com@gmail.com";
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=heatwise-studio.com;
+       dara=pass header.i=@gmail.com
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com.
+ [209.85.220.41])
+        by mx.google.com with SMTPS id
+ 4fb4d7f45d1cf-60c826f3394sor3755493a12.0.2025.06.30.12.18.50
+        for <recursivelybrad@gmail.com>
+        (Google Transport Security);
+        Mon, 30 Jun 2025 12:18:50 -0700 (PDT)
+Received-SPF: pass (google.com: domain of
+ bdettmer+caf_=recursivelybrad=gmail.com@gmail.com designates 209.85.220.41 as
+ permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@brndbot.com header.s=s1 header.b=wZhzA4bk;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=Odc6C157;
+       arc=pass (i=2 spf=pass spfdomain=sg.brndbot.com dkim=pass
+ dkdomain=brndbot.com dkim=pass dkdomain=sendgrid.info);
+       spf=pass (google.com: domain of
+ bdettmer+caf_=recursivelybrad=gmail.com@gmail.com designates 209.85.220.41 as
+ permitted sender)
+ smtp.mailfrom="bdettmer+caf_=recursivelybrad=gmail.com@gmail.com";
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=heatwise-studio.com;
+       dara=pass header.i=@gmail.com
+ARC-Seal: i=2; a=rsa-sha256; t=1751311130; cv=pass;
+        d=google.com; s=arc-20240605;
+        b=dhNkTHpl1LD7cjNx0+zlHTTeUSvNVeXbDjDNtXwaA6Ry4miQe3y3X1SmiQzqYJKuGK
+         i76ZZiLYqFBbcafxzlrMVFJgsSx6Ty5tXUdBYaQtPGRCDNa0o7HvPvsmw0jo4ZEc9Bw+
+         gLDk15tOuzqpKgSsHj+cLEh3pKCHxrGFzGnc+mL3lyHUiMvfu37riVca20+SYxg5DiUs
+         vn9s+hdfmI2bKHrx8/27IelzYbSff68c3ReeKrfo1/l02elETZeCCPNyA8XaG1psbxJn
+         Cn1+Thu8sK4CUw1D16+kZ83bPbyqeyr4+I11IeB4HAj0KO1/Kl+1FvfkpQL+LAo/gMHA
+         Gm3Q==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=list-unsubscribe-post:list-unsubscribe:to:reply-to:subject
+         :message-id:mime-version:from:date:content-transfer-encoding
+         :dkim-signature:dkim-signature:delivered-to;
+        bh=x7WXbu6P1ja6kQhmJKa8552fw0Dy1Lk89KjicKefsOA=;
+        fh=gFCTvJSMwXyphSiNKMltgizLepYp+hFwfwJlga3MtQ0=;
+        b=ftbG6Ns+jX1EC8dUqMpn0CWf17oTxUPlg1mZX8g5P1O0XMRwRQDZn/g5e36Lx1dugE
+         7K82zDgPBW2b2+ype6LTd2f33bK9st0lj0fE6N2l8G6bleJ6N5worAWtUQa0Zq7kucRF
+         J9iCp/rs9v4U8/tID6vma4YEISbwBWiN/NPsxN6/7GkdtWCGD4Fcjsx5N+SFE6XukzYU
+         Gb0d2c2PcPKmhcPXkLMk4uneNcu3zxVsyeIsN4I3UInJVq2xN3a8bWK7Aw+QoEtFYASE
+         cYc+vwI0kje0xE1NSPpZhaFmCYxQoVN9C6shGbar6vQVpwV7pc7OyV0MI7uqe1Y+08Mo
+         rMNg==;
+        dara=google.com
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@brndbot.com header.s=s1 header.b=wZhzA4bk;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=Odc6C157;
+       spf=pass (google.com: domain of
+ bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com designates
+ 168.245.98.13 as permitted sender)
+ smtp.mailfrom="bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com";
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=heatwise-studio.com
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751311130; x=1751915930;
+        h=list-unsubscribe-post:list-unsubscribe:to:reply-to:subject
+         :message-id:mime-version:from:date:content-transfer-encoding
+         :dkim-signature:dkim-signature:delivered-to:x-forwarded-for
+         :x-forwarded-to:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x7WXbu6P1ja6kQhmJKa8552fw0Dy1Lk89KjicKefsOA=;
+        b=J0/ygkqm/Y2Wy38wVurqZ2G9AabUQ8sgbQWxNycSiQvJ9qmGIQJtgcklh1YmLO8Rw4
+         XfclpCxgSfmUoro9KVjYbMVvYaDF+5CNTAJLMYuglGH6sdygQK115eAs9sMQUUGnWqJc
+         u8/l5jyjk5atS+kQD7sPNJ0c3hNkWEm6Mt6JOflq+W2bUwgay3nGbEa9RcQPeiyQdTZN
+         McW5ZosxtuSzrXo+gcbRVx2G6I7LMbpjWLAwxRuyzGPT2cECf8kjN0RWfUsQ/NmDeVd1
+         63RnkJj7SRE1u09orhmWSHxdBAR/EuMkX3kyEQhdHMgxFBfFWloFX8dElmI4S7z3EKE/
+         zGpg==
+X-Forwarded-Encrypted: i=2;
+ AJvYcCUVpHbdhwyvr/OZX07ELWT4BDPKih2t/8zns4BXyrbMpfs02EQGeVPs6axAQcyI228/RvEu9g9bCmMjVmJ6ejc=@gmail.com
+X-Gm-Message-State: AOJu0YyEvlp+zig5utRXHG7MjM4/VsXXhs67maNPaa6pYZ9ocFucg52l
+	IbM0V/YIU3xJoy7471KBfWIyj0znNqkJlsHpPV41idfPgOKGqq6KpRDjM7tctrGu1p4rlSkXfgI
+	HN9asuRFX+2TDuHZ2By0uTKGb/Z5vDaLIBtoOKz2d55rl37qfKdFk/Rf2eCbLFA==
+X-Received: by 2002:a05:6402:50cf:b0:607:20d0:4e99 with SMTP id
+ 4fb4d7f45d1cf-60c88daa4a5mr11348702a12.21.1751311129743;
+        Mon, 30 Jun 2025 12:18:49 -0700 (PDT)
+X-Forwarded-To: recursivelybrad@gmail.com
+X-Forwarded-For: bdettmer@gmail.com recursivelybrad@gmail.com
+Delivered-To: bdettmer@gmail.com
+Received: by 2002:a05:7208:6113:b0:a2:b680:e617 with SMTP id h19csp3826385rba;
+        Mon, 30 Jun 2025 12:18:48 -0700 (PDT)
+X-Google-Smtp-Source: 
+ AGHT+IGfEd48irBA+wQlPL2OWLAR4CogbJH76J+j6/mulBPKgObv3giXBktQ26y6Gl70E8o0jg9Q
+X-Received: by 2002:a05:6902:1609:b0:e75:c2d7:53d6 with SMTP id
+ 3f1490d57ef6-e87a7af79damr19275353276.13.1751311128015;
+        Mon, 30 Jun 2025 12:18:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1751311128; cv=none;
+        d=google.com; s=arc-20240605;
+        b=EcV7+K543ndheM/+77cswQa3wcIjXFKjam0pHOe/ssE2fYyrLMEmEwghVKdVl+AtWk
+         5f7ukz1lWWvePyrALPDZRQwM7oKUi5d6Ezb38j+Q9Yguc80qAMJPU1JTwmcgenHS+Kk0
+         38rFgnZSFiwW0105JvY2d4uW9kq6sXjxJXuBT4o87ryyL5jHUu3jYkASjtxbsy/04yqo
+         zUA4/iH9mfsSmJJcDuiVsXCYZSFv1c6n68qArMPYUv1+XKLUXCtbI4kS9LvGAdw8fc+4
+         IpOSDdLFaBi9gXlniuIp5bkx7DmSBVbgsPoYnsIrmVD1m3R1sPwwi/yglPJW8QSWREZO
+         tkQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=list-unsubscribe-post:list-unsubscribe:to:reply-to:subject
+         :message-id:mime-version:from:date:content-transfer-encoding
+         :dkim-signature:dkim-signature;
+        bh=x7WXbu6P1ja6kQhmJKa8552fw0Dy1Lk89KjicKefsOA=;
+        fh=xqx5rG0CMX1FnROuCMak349pJqNaN1/FaFoOE0IPexE=;
+        b=ibWikVj5BYgM1GjeBgDa/N/5XDaNgnPxfU3N5lmI5YzQqmJkB9AJXb9MTzmdNpVMdd
+         6vDZAruVPNuVdZkbXBD8HJ9lOrE0aw8oayL4mHLpb/60I2YFm5CHVq+shJ4mDuZFRqP9
+         ejnO6t5oMpcoBRfD2a6Q1K/j/9nL9xu7rtV0/LVFo16APW5YKr6azmgv4DecE3nP7cCA
+         NBtyZi6kllyM4d7Cpawn/B7FBnbnVqm0VHalFmxNki1Wh7etBZOY5GKEfBNjahh/8uwu
+         2k+cGFSs5Hwjl+0lETItJN8L9f81Lun4QuLtQD9W+ajjJVsN3NVErAzTpUr3myDZQh/G
+         GZaQ==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@brndbot.com header.s=s1 header.b=wZhzA4bk;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=Odc6C157;
+       spf=pass (google.com: domain of
+ bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com designates
+ 168.245.98.13 as permitted sender)
+ smtp.mailfrom="bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com";
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=heatwise-studio.com
+Received: from o9.sg.brndbot.com (o9.sg.brndbot.com. [168.245.98.13])
+        by mx.google.com with ESMTPS id
+ 3f1490d57ef6-e87a6bf965fsi7915169276.188.2025.06.30.12.18.47
+        for <bdettmer@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Jun 2025 12:18:48 -0700 (PDT)
+Received-SPF: pass (google.com: domain of
+ bounces+36193192-807f-bdettmer=gmail.com@sg.brndbot.com designates
+ 168.245.98.13 as permitted sender) client-ip=168.245.98.13;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=brndbot.com;
+	h=content-transfer-encoding:content-type:from:mime-version:subject:
+	reply-to:to:list-unsubscribe:list-unsubscribe-post:cc:content-type:feedback-id:
+	from:subject:to;
+	s=s1; bh=x7WXbu6P1ja6kQhmJKa8552fw0Dy1Lk89KjicKefsOA=;
+	b=wZhzA4bkYRzs0FWann5AL0+8bD8b1Tt7hFOUY64ePNJzxNv1+isoI02mM4cj46WI73PV
+	91jsmTzNObK/ft+vHlu5uVSzGy2sHiuzI3Z8htH9ukmivqedQYzX7GLMcwUbF5SB6meDZ8
+	Jfe02L01c/gNuVDbCyWFhLILHUSandMCP9JiPI3xL8TIkbsO8XWMebDMainCy9+0Iab/Sa
+	MgrA5t3t+5m7lc7UimjjrztyRwfTrwQFMjj4EEtG7WStlsZ/G8FULg9nFFkthAu9X9nOkf
+	myP/wL0avqoeyYT5JfD1IJ8oEu2l3GS4IMZIBLEPMOnGIrlJpO7cRsCynBzr4lLQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.info;
+	h=content-transfer-encoding:content-type:from:mime-version:subject:
+	reply-to:to:list-unsubscribe:list-unsubscribe-post:cc:content-type:feedback-id:
+	from:subject:to;
+	s=smtpapi; bh=x7WXbu6P1ja6kQhmJKa8552fw0Dy1Lk89KjicKefsOA=;
+	b=Odc6C1573BMGe1EWmKFlLs4WxBnTubDvaT1BA5CMQmA4iDqF16vZgfq1EeymnhqwkSY4
+	PA9oev8xb14U0bpj5F32J6PdNfu77K/QnI8x4rU3WGhcnh/7zyS47GvUJShnyTXHCPIEq5
+	IOqf1Bx3VqIq9mhiLDooBOaAuVoUSM2pk=
+Received: by recvd-7d86b8fd66-m7w9q with SMTP id
+ recvd-7d86b8fd66-m7w9q-1-6862E317-23
+	2025-06-30 19:18:47.42369107 +0000 UTC m=+2255684.274114237
+Received: from MzYxOTMxOTI (unknown)
+	by geopod-ismtpd-canary-0 (SG)
+	with HTTP
+	id EqO_e1c6TNiURgL8gw51Qg
+	Mon, 30 Jun 2025 19:18:47.409 +0000 (UTC)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=utf-8
+Date: Mon, 30 Jun 2025 19:18:47 +0000 (UTC)
+From: Heatwise <info@heatwise-studio.com>
+Mime-Version: 1.0
+Message-ID: <EqO_e1c6TNiURgL8gw51Qg@geopod-ismtpd-canary-0>
+Subject: Your spot has been reserved
+Reply-To: parkslope@heatwise-studio.com
+X-SG-EID: 
+ =?us-ascii?Q?u001=2E5EzLQ8ev+3BKGSaDe=2Fd1nkQxE0ywzMDMGiFelX4Tu7xKJ1pBT9DmF5SHl?=
+ =?us-ascii?Q?laD4oeHxRB+dm3j3A4YPibkeC2Pp6fva6FQbrQw?=
+ =?us-ascii?Q?96ZsogD3xTPg=2FwE568zcWu+8ho9oRuTIyqhkje3?=
+ =?us-ascii?Q?MWwbeJEwT6K=2F2Qp3xDlrdYs25eRa5270WXRfk4t?=
+ =?us-ascii?Q?aQ75KUczXuo1pHrpgpM=2FKcv+RzN3WqNajYuSXpn?=
+ =?us-ascii?Q?C3CGsutkETnQcPg6SjMXADVSNrRItstn5gBh+zI?= =?us-ascii?Q?YiEN?=
+To: bdettmer@gmail.com
+X-Entity-ID: u001.1V8aIuP9SFZHMy13zkogmw==
+List-Unsubscribe: 
+ =?us-ascii?Q?=3Chttps=3A=2F=2Fu36193192=2Ect=2Esendgrid=2Enet=2Flu=2Funsubscribe=3Foc=3Du001=2Ek2zQ?=
+ =?us-ascii?Q?6e8XhQXaaB5Y-oVkOu7HTzx6QD=5FKZackoUIUqDT?=
+ =?us-ascii?Q?9XkA2B2VR-e5jysVOG7=5FY3cW1jXzsmaULIhYGIJ?=
+ =?us-ascii?Q?iZmVhaqZbIgPhGFB4bUGDnpB3m=5Fb9J6jWCEzfHV?=
+ =?us-ascii?Q?MzQEHj2WVk5HvuRk2G1HfcfLpzgFaD4AEq9zlKR?=
+ =?us-ascii?Q?Cpg060z-IVVmB3a5thY7WzVxirAd4bqJnZZEYQv?=
+ =?us-ascii?Q?i-4um9Tg7WMYTZU1QBYMpwackodTTZpgOzfpK96?=
+ =?us-ascii?Q?mzLW=5FyAqWcggJBU2kDULV5f4ZtzybCLUPbivQED?=
+ =?us-ascii?Q?f96ynzfcc9v7gSixTmJfFKFK1DL77Rn=5FoIcFC4N?=
+ =?us-ascii?Q?-zU2NJDibvHrlGtBX922A=5Fcmr0Jc35gKLR662qk?=
+ =?us-ascii?Q?rX=5FJuDbeVeH1Vt4gLC-S-bjQ-xu0Br5Vo2N5w2z?=
+ =?us-ascii?Q?539EnI9EJYp6OXPw4PC3d4K4O4FNfYo2B=5FRBIPJ?=
+ =?us-ascii?Q?Q7OetwFdaUKAPTj=3E=2C=3Cmailto=3Aunsubscribe=40sg?=
+ =?us-ascii?Q?=2Ebrndbot=2Ecom=3Fsubject=3Dhttp=3A=2F=2Flink=2Ebrndbo?=
+ =?us-ascii?Q?t=2Ecom=2Fmt=2Fu=2Fu001=2EGcgG6NvchLrwiVREiz9Fo9g?=
+ =?us-ascii?Q?Er8ZBwP-F-KianZ6T8NI=2F4hs=2Fu001=2EbdypIfyD=2F?=
+ =?us-ascii?Q?u001=2E4MW4fIJu0o9YyNb1cp71fDq5oAdY-2B2V1?=
+ =?us-ascii?Q?CJcm9r1EYROiwnCLtbybNl2ujOXQyuRZoyLWJLg?=
+ =?us-ascii?Q?u-2FV9sRobaj90IGMrua6q4y-2BRATLAosrnAsi?=
+ =?us-ascii?Q?m-2FyfLZzRcr5yK4-2Bv6GC3uBTlG-2Bq5y73ws?=
+ =?us-ascii?Q?qmcBERLd1UzfofqQx5IvBNnOhinyzKrFTP79E4O?=
+ =?us-ascii?Q?FHB218eIW07k00umOXGNPuYkSk-2FMs6XvIJBV-?=
+ =?us-ascii?Q?2F5QYt5T6qEiinG9YM1rvU-3D=2Fu001=2EdSfHHQqw?=
+ =?us-ascii?Q?=3E?=
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+
+<html xmlns=3D"http://www.w3.org/1999/xhtml" lang=3D"en" xml:lang=3D"en" st=
+yle=3D"background:#f3f3f3!important"><head>
+=20
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8=
+">
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width">
+    <title></title>
+    <style>@media only screen{html{min-height:100%;background:#f3f3f3}}@med=
+ia only screen and (max-width:596px){table.body img{width:auto;height:auto}=
+table.body center{min-width:0!important}table.body .container{width:95%!imp=
+ortant}table.body .columns{height:auto!important;-moz-box-sizing:border-box=
+;-webkit-box-sizing:border-box;box-sizing:border-box;padding-left:16px!impo=
+rtant;padding-right:16px!important}table.body .columns .columns{padding-lef=
+t:0!important;padding-right:0!important}th.small-12{display:inline-block!im=
+portant;width:100%!important}.columns th.small-12{display:block!important;w=
+idth:100%!important}}@media only screen and (max-width:600px){small{line-he=
+ight:1.5em;padding:auto}}</style>
+  </head>
+  <body style=3D"-moz-box-sizing:border-box;-ms-text-size-adjust:100%;-webk=
+it-box-sizing:border-box;-webkit-text-size-adjust:100%;Margin:0;background:=
+#f3f3f3!important;box-sizing:border-box;color:#0a0a0a;font-family:Helvetica=
+,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;m=
+in-width:100%;padding:0;text-align:left;width:100%!important">
+<p><span class=3D"mcnPreviewText" style=3D"display: none; font-size: 0px; l=
+ine-height: 0px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hid=
+den; visibility: hidden; mso-hide: all;">We're excited to shvitz with ya</s=
+pan></p>
+<!-- Preheader white space hack -->
+<div style=3D"display: none; max-height: 0px; overflow: hidden;">=CD=8F=E2=
+=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=
+=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=
+=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=
+=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=
+=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=
+=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=
+=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=
+=8F=E2=80=8C=C2=A0=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=
+=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=
+=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=
+=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=C2=
+=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=
+=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=
+=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=
+=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=
+=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=
+=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=
+=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=
+=A0=CD=8F=E2=80=8C=C2=A0=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=
+=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=
+=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=
+=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=
+=A0=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=
+=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=
+=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=
+=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=C2=A0=CD=8F=E2=80=
+=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=
+=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=
+=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=
+=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=
+=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=
+=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=
+=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=
+=8C=C2=A0=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=
+=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=
+=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=
+=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=C2=A0=CD=8F=
+=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=
+=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=
+=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=
+=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=
+=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=
+=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=
+=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=CD=8F=E2=80=8C=C2=A0=
+=CD=8F=E2=80=8C=C2=A0</div>
+<p>=C2=A0</p>
+<table class=3D"body" style=3D"margin: 0; background: #f3f3f3!important; bo=
+rder-collapse: collapse; border-spacing: 0; color: #0a0a0a; font-family: He=
+lvetica,Arial,sans-serif; font-size: 16px; font-weight: 400; height: 100%; =
+line-height: 1.3; padding: 0; text-align: left; vertical-align: top; width:=
+ 100%;">
+<tbody>
+<tr style=3D"padding: 0; text-align: left; vertical-align: top;">
+<td class=3D"center" style=3D"-moz-hyphens: auto; -webkit-hyphens: auto; ma=
+rgin: 0; border-collapse: collapse!important; color: #0a0a0a; font-family: =
+Helvetica,Arial,sans-serif; font-size: 16px; font-weight: 400; hyphens: aut=
+o; line-height: 1.3; padding: 0; text-align: left; vertical-align: top; wor=
+d-wrap: break-word;" align=3D"center" valign=3D"top"><center style=3D"min-w=
+idth: 580px; width: 100%;" data-parsed=3D"">
+<table class=3D"container float-center" style=3D"margin: 0 auto; background=
+: #fefefe; border-collapse: collapse; border-spacing: 0; float: none; paddi=
+ng: 0; text-align: center; vertical-align: top; width: 580px;" align=3D"cen=
+ter">
+<tbody>
+<tr style=3D"padding: 0; text-align: left; vertical-align: top;">
+<td style=3D"-moz-hyphens: auto; -webkit-hyphens: auto; margin: 0; border-c=
+ollapse: collapse!important; color: #0a0a0a; font-family: Helvetica,Arial,s=
+ans-serif; font-size: 16px; font-weight: 400; hyphens: auto; line-height: 1=
+.3; padding: 0; text-align: left; vertical-align: top; word-wrap: break-wor=
+d;">
+<table class=3D"row header main-color" style=3D"background: #8a8a8a; backgr=
+ound-color: #f2eedc; border-collapse: collapse; border-spacing: 0; display:=
+ table; padding: 0; position: relative; text-align: left; vertical-align: t=
+op; width: 100%;">
+<tbody>
+<tr style=3D"padding: 0; text-align: left; vertical-align: top;">
+<th class=3D"small-12 large-12 columns first last" style=3D"margin: 0 auto;=
+ color: #0a0a0a; font-family: Helvetica,Arial,sans-serif; font-size: 16px; =
+font-weight: 400; line-height: 1.3; padding: 0; padding-bottom: 0; padding-=
+left: 16px; padding-right: 16px; text-align: left; width: 564px;">
+<table style=3D"border-collapse: collapse; border-spacing: 0; padding: 0; t=
+ext-align: left; vertical-align: top; width: 100%;">
+<tbody>
+<tr style=3D"padding: 0; text-align: left; vertical-align: top;">
+<th style=3D"margin: 0; color: #0a0a0a; font-family: Helvetica,Arial,sans-s=
+erif; font-size: 16px; font-weight: 400; line-height: 1.3; padding: 0; text=
+-align: left;">
+<div><img class=3D"tenant-logo" style=3D"-ms-interpolation-mode: bicubic; c=
+lear: both; display: block; max-height: 50px; height: auto; max-width: 350p=
+x; outline: 0; text-decoration: none; margin: 0 auto; padding-top: 20px; pa=
+dding-bottom: 20px;" src=3D"https://images.squarespace-cdn.com/content/v1/5=
+91b31a72e69cf33dfbb27f8/73ecf8ed-f1f1-4839-b98c-5b9223ffa794/heatwise+new+l=
+ogo.png?format=3D500w"></div>
+<div style=3D"display: none; max-height: 0px; overflow: hidden;">=CD=8F=E2=
+=80=8C =CD=8F=E2=80=8C =CD=8F=E2=80=8C =CD=8F=E2=80=8C =CD=8F=E2=80=8C =CD=
+=8F=E2=80=8C =CD=8F=E2=80=8C =CD=8F=E2=80=8C =CD=8F=E2=80=8C =CD=8F=E2=80=
+=8C =CD=8F=E2=80=8C =CD=8F=E2=80=8C</div>
+</th>
+</tr>
+</tbody>
+</table>
+</th>
+</tr>
+</tbody>
+</table>
+<table class=3D"row" style=3D"border-collapse: collapse; border-spacing: 0;=
+ display: table; padding: 0; position: relative; text-align: left; vertical=
+-align: top; width: 100%;">
+<tbody>
+<tr style=3D"padding: 0; text-align: left; vertical-align: top;">
+<th class=3D"small-12 large-12 columns first last" style=3D"margin: 0 auto;=
+ color: #0a0a0a; font-family: Helvetica,Arial,sans-serif; font-size: 16px; =
+font-weight: 400; line-height: 1.3; padding: 0; padding-bottom: 16px; paddi=
+ng-left: 16px; padding-right: 16px; text-align: left; width: 564px;">
+<table style=3D"border-collapse: collapse; border-spacing: 0; padding: 0; t=
+ext-align: left; vertical-align: top; width: 100%;">
+<tbody>
+<tr style=3D"padding: 0; text-align: left; vertical-align: top;">
+<th style=3D"margin: 0; color: #0a0a0a; font-family: Helvetica,Arial,sans-s=
+erif; font-size: 16px; font-weight: 400; line-height: 1.3; padding: 0; text=
+-align: left;">
+<table class=3D"spacer" style=3D"border-collapse: collapse; border-spacing:=
+ 0; padding: 0; text-align: left; vertical-align: top; width: 100%;">
+<tbody>
+<tr style=3D"padding: 0; text-align: left; vertical-align: top;">
+<td style=3D"-moz-hyphens: auto; -webkit-hyphens: auto; margin: 0; border-c=
+ollapse: collapse!important; color: #0a0a0a; font-family: Helvetica,Arial,s=
+ans-serif; font-size: 16px; font-weight: 400; hyphens: auto; line-height: 1=
+6px; mso-line-height-rule: exactly; padding: 0; text-align: left; vertical-=
+align: top; word-wrap: break-word;" height=3D"16px">=C2=A0</td>
+</tr>
+</tbody>
+</table>
+<!-- body text goes here -->
+<p>Hey Bradley,</p>
+<p>You just made the best decision of your day.</p>
+<p>Your spot is reserved for <strong>Some Like it Hot</strong> with <strong=
+>Jeremy Guttman</strong> at <strong>Park Slope - 7th Ave</strong>. We will =
+see you at <strong>12:00=E2=80=AFPM</strong> on <strong>Thursday</strong>, =
+<strong>July 24</strong>.</p>
+<p>The need-to-know deets:</p>
+<ul>
+<li>
+<p><strong>BYO mat + towel.</strong> If you forget, we have both available =
+for rent or purchase. Note: all mat rentals must be covered by a towel.</p>
+</li>
+<li>
+<p>Best to arrive <strong>1</strong><strong>0-15 minutes before class</stro=
+ng> so you can get settled and Shazam some of the tunes coming from the fro=
+nt desk. To make sure everybody has the best shvitz possible, late entry wi=
+ll not be permitted.</p>
+</li>
+<li>
+<p>Life happens. If you need to change or cancel this reservation, please u=
+se the Heatwise app or visit our website. <strong>Please cancel at least 3 =
+hours before class starts to avoid late fees.</strong></p>
+</li>
+<li>Our practice spaces are a <strong>no phone zone</strong> so please come=
+ prepared to leave your device in a locker. If you have a special circumsta=
+nce, please let our front desk know and they can keep your phone behind the=
+ desk for you in case of emergency.</li>
+<li>
+<p>To ensure you are getting all the Heatwise updates and info,=C2=A0<stron=
+g>check your junk/promotions inbox and mark Heatwise as safe.</strong></p>
+</li>
+<li>
+<p>Given the state of the world and our commitment to making things as stre=
+ss-free as possible,<strong> this studio is a no cough-or-sneeze-or-sniffle=
+ zone.</strong> This means we reserve the right to turn you away if you are=
+ displaying these symptoms.</p>
+</li>
+<li>Any other questions? Check out our <a href=3D"http://link.brndbot.com/l=
+s/click?upn=3Du001.CiS3Kx3X69PrtQos9TK2LsIELekszGfQ3FCz0ZOOTb1j58d2Uq5ywyCc=
+rkWmWN0-2FnKkF_vGyE5BEgt63Qj3TYJmBB8qhGtbNE57T63ucKJOHvLkXXHOTB7UVX6KFpRoKP=
+jvkCJvvw1j8ay2sDz3rhZXPMgv8ztPSK76rlJdSJ3znxDhH4nKE3t7pfq1cTnfRjWv4qK0BsO5s=
+rkvdZislSfwxO4e46duuDJ9dLyoEZn1ARjEaUS8uCG0lbK3Ny107g6P01cG7efpCy9HtyPCfFh8=
+Z1Eg-3D-3D" target=3D"_blank" rel=3D"noopener"><strong>FAQ page</strong></a=
+>=C2=A0or give us a call.=C2=A0</li>
+</ul>
+<p>See you soon, hot stuff.</p>
+</th>
+</tr>
+</tbody>
+</table>
+<p style=3D"margin: 0; margin-bottom: 20px; color: #0a0a0a; font-family: He=
+lvetica,Arial,sans-serif; font-size: 16px; font-weight: 400; line-height: 1=
+.3; padding: 0; text-align: left;">=C2=A0</p>
+</th>
+<th class=3D"expander" style=3D"margin: 0; color: #0a0a0a; font-family: Hel=
+vetica,Arial,sans-serif; font-size: 16px; font-weight: 400; line-height: 1.=
+3; padding: 0!important; text-align: left; visibility: hidden; width: 0;">=
+=C2=A0</th>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"spacer" style=3D"border-collapse: collapse; border-spacing:=
+ 0; padding: 0; text-align: left; vertical-align: top; width: 100%;">
+<tbody>
+<tr style=3D"padding: 0; text-align: left; vertical-align: top;">
+<td style=3D"-moz-hyphens: auto; -webkit-hyphens: auto; margin: 0; border-c=
+ollapse: collapse!important; color: #0a0a0a; font-family: Helvetica,Arial,s=
+ans-serif; font-size: 16px; font-weight: 400; hyphens: auto; line-height: 1=
+6px; mso-line-height-rule: exactly; padding: 0; text-align: left; vertical-=
+align: top; word-wrap: break-word;" height=3D"16px">=C2=A0</td>
+</tr>
+</tbody>
+</table>
+</center></td>
+</tr>
+</tbody>
+</table>
+<!-- prevent Gmail on iOS font size manipulation -->
+<div style=3D"display: none; white-space: nowrap; font: 15px courier; line-=
+height: 0;">=C2=A0</div>
+<img src=3D"http://link.brndbot.com/wf/open?upn=3Du001.1GEjtV-2FkM0XbgRKS9R=
+IpjpNSVrm-2FSNLkvdIHOqqHiRMBsJoT-2Bw7NRNWpIn8n-2Bi7-2BOSbEy-2B3Eq-2B2jBtFIU=
+wtRp2zNHlmF-2BPSstEYBp0OhZfdo1AsWcu5m2VaXE0uHngPb-2BhLCmJ0CCUyToQzKFvfQGtke=
+aPNBmQJSEJ1lIOCiBnfjf0I3gH94By1QsQh9DlzODoL9HNe4ND13nLfmfI8NTQ-3D-3D" alt=
+=3D"" width=3D"1" height=3D"1" border=3D"0" style=3D"height:1px !important;=
+width:1px !important;border-width:0 !important;margin-top:0 !important;marg=
+in-bottom:0 !important;margin-right:0 !important;margin-left:0 !important;p=
+adding-top:0 !important;padding-bottom:0 !important;padding-right:0 !import=
+ant;padding-left:0 !important;"/></body></html>
