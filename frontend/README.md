@@ -7,7 +7,7 @@ Simple user-facing website that renders the yoga enrollments retrieved from a bu
    actions, deployments, pages, workflows and secrets
 2) add token as a secrets / actions repository secret as 'G_ACCESS_TOKEN'
 3) select build and deploy source "Github Actions"
-4) make sure `VITE_YOGA_DATA_URL` has the right bucket location in [deploy.yaml](../.github/workflows/deploy.yaml)
+4) make sure `VITE_YOGA_DATA_URL` has the right bucket location in [deploy.yaml](../.github/workflows/deploy_frontend.yaml)
 
 ### Troubleshooting / Security
 Setup [some policies](../s3) for your bucket and [publisher](../s3/publisher_iam_permission_policy.json), and add an [index](../s3/index.html) file to your bucket

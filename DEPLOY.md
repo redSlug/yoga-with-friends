@@ -1,12 +1,19 @@
 # Deploy
 
-## Option 1) Github Actions + ssh to Raspberry pi
-Currently, the front end code configured to automatically deploy to Github Pages via Gihub actions 
-and the backend code is deployed by manually SSHing into a raspberry pi and pulling from Github. 
+## Frontend 
+The front end code is configured to automatically deploy to Github Pages via Github actions 
+
+## Backend
+
+### Option 1)
+Deploy by manually SSHing into a raspberry pi and pulling from Github.
 An S3 bucket is set up to host the frontend JSON and calendar ICS that the backend pushes to and 
 the frontend and calendar client respectively read from.
 
-## Option 2) k8s
+### Option 2)
+Deploy backend using dockerhub and Github actions
+
+### Option 3)
 [This PR](https://github.com/recursecenter/cluster-config/pull/94) includes configurations
 
 ```bash
@@ -16,10 +23,12 @@ ssh bdettmer@broome.cluster.recurse.com -N -L 6443:localhost:6443
 docker buildx build --platform linux/amd64 -f Dockerfile -t bdettmer/yoga-with-friends . && docker push bdettmer/yoga-with-friends && kubectl rollout restart -n yoga-with-friends deployment/yoga-with-friends
 ````
 
-### Copy token.json server
+Copy token.json server
+```bash
 cat backend/token.json | base64 | pbcopy
 paste into `yoga-with-friends-credentials.yaml` then deploy
 kubectl apply -f k8s/secrets/yoga-with-friends-credentials.yaml -f k8s/yoga-with-friends/deployment.yaml
+```
 
 ### Troubleshooting
 * `Unable to connect to the server: tls: failed to verify certificate: x509` 

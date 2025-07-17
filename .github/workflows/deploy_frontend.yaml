@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Frontend
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      VITE_YOGA_DATA_URL: https://s3.us-east-2.amazonaws.com/yoga-with-friends.com/yoga.json
+      VITE_YOGA_DATA_URL: ${{ vars.VITE_YOGA_DATA_URL }}
 
     steps:
       - name: Checkout repo
